@@ -1,4 +1,5 @@
 import { Path } from './type'
+import $ from 'fire-keeper'
 
 // variable
 
@@ -16,3 +17,5 @@ export const htmlContainer = [
   '</body>',
   '</html>',
 ].join('')
+
+export const isWindows = $.os() === 'windows'

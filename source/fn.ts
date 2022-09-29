@@ -24,12 +24,13 @@ const convertEncoding = async () => {
 
   for (const source of listSource) {
     const content = await $.read<string>(source)
+    if (!content) continue
     if (~content.search(/我/u)) continue
 
-    const buffer = iconv.encode(
-      iconv.decode(await $.read(source, { raw: true }), 'gb2312'),
-      'utf-8'
-    )
+    const content2 = await $.read(source, { raw: true })
+    if (!content2) continue
+
+    const buffer = iconv.encode(iconv.decode(content2, 'gb2312'), 'utf-8')
     await $.write(source, buffer)
   }
 }
@@ -58,10 +59,10 @@ const removeTemp = () => $.remove(path.temp)
 
 const splitTxt = async (source: string) => {
   const basename = $.getBasename(source)
-  const listGroup = chunk(
-    (await $.read<string>(source)).replace(/\r/g, '').split('\n'),
-    fileSize
-  )
+  const content = await $.read<string>(source)
+  if (!content) throw new Error(`found no content in '${source}'`)
+
+  const listGroup = chunk(content.replace(/\r/g, '').split('\n'), fileSize)
 
   let idx = 1
   const listSource = []
@@ -78,15 +79,15 @@ const splitTxt = async (source: string) => {
 }
 
 const validateEnvironment = async () => {
-  if (!(await $.isExisted(path.kindlegen))) {
-    $.log(
+  if (!(await $.isExist(path.kindlegen))) {
+    $.echo(
       "found no 'kindlegen', run 'brew cask install kindlegen' to install it"
     )
     return false
   }
 
-  if (!(await $.isExisted(path.document))) {
-    $.log(`found no '${path.document}', kindle must be connected`)
+  if (!(await $.isExist(path.document))) {
+    $.echo(`found no '${path.document}', kindle must be connected`)
     return false
   }
 

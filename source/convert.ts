@@ -40,7 +40,10 @@ const txt2html = async (source: string) => {
   const basename = $.getBasename(source)
   const target = `${path.temp}/${basename}.html`
 
-  const listContent = (await $.read<string>(source))
+  const content = await $.read<string>(source)
+  if (!content) return
+
+  const listContent = content
     .split('\n')
     .map(l => {
       const line = l.trim()
@@ -48,8 +51,8 @@ const txt2html = async (source: string) => {
     })
     .filter(it => it)
 
-  const content = htmlContainer.replace('{{content}}', listContent.join('\n'))
-  await $.write(target, content)
+  const result = htmlContainer.replace('{{content}}', listContent.join('\n'))
+  await $.write(target, result)
 }
 
 // export

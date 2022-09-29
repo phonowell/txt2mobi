@@ -1,4 +1,6 @@
-export type Config = {
+export type Config = Record<'' | 'macos' | 'windows' | 'unknown', ItemConfig>
+
+export type ItemConfig = {
   document: string
   fileSize: number
   kindlegen: string

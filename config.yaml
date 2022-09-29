@@ -1,11 +1,27 @@
-# kindle上document目录的路径
-document: /Volumes/Kindle/documents
+macos:
 
-# 书籍分割的行数
-fileSize: 2000
+  # kindle上document目录的路径
+  document: /Volumes/Kindle/documents
 
-# kindlegen.exe的路径
-kindlegen: ~/OneDrive/程序/kindlegen/kindlegen
+  # 书籍分割的行数
+  fileSize: 2000
 
-# txt仓库路径
-storage: ~/OneDrive/书籍/同步
+  # kindlegen.exe的路径
+  kindlegen: ~/OneDrive/程序/kindlegen/kindlegen
+
+  # txt仓库路径
+  storage: ~/OneDrive/书籍/同步
+
+windows:
+
+  # kindle上document目录的路径
+  document: H:/documents
+
+  # 书籍分割的行数
+  fileSize: 2000
+
+  # kindlegen.exe的路径
+  kindlegen: E:/OneDrive/程序/kindlegen/kindlegen.exe
+
+  # txt仓库路径
+  storage: E:/OneDrive/书籍/同步
