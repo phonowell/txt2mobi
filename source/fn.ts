@@ -1,6 +1,7 @@
 import $ from 'fire-keeper'
-import chunk from 'lodash/chunk'
 import iconv from 'iconv-lite'
+import chunk from 'lodash/chunk'
+
 import { fileSize, path } from './const'
 
 // variable
@@ -81,7 +82,7 @@ const splitTxt = async (source: string) => {
 const validateEnvironment = async () => {
   if (!(await $.isExist(path.kindlegen))) {
     $.echo(
-      "found no 'kindlegen', run 'brew cask install kindlegen' to install it"
+      "found no 'kindlegen', run 'brew cask install kindlegen' to install it",
     )
     return false
   }

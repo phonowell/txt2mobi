@@ -1,4 +1,5 @@
 import $ from 'fire-keeper'
+
 import { isWindows, path, htmlContainer } from './const'
 
 // function
@@ -10,7 +11,7 @@ const html2mobi = async (source: string) => {
     : `"${path.temp}/${basename}.html"`
 
   const cmd = [path.kindlegen, `${target}`, '-c1', '-dont_append_source'].join(
-    ' '
+    ' ',
   )
 
   await $.exec(cmd)
@@ -27,7 +28,7 @@ const image2html = async (source: string) => {
     const buffer = await $.read(img)
     if (!buffer) continue
     const html = `<p><img alt='' src='data:image/jpeg;base64,${buffer.toString(
-      'base64'
+      'base64',
     )}'></p>`
     listResult.push(html)
   }
