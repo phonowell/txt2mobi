@@ -1,4 +1,7 @@
 import $ from 'fire-keeper'
+
+import { path } from './const'
+import { txt2html, html2mobi } from './convert'
 import {
   convertEncoding,
   splitTxt,
@@ -6,9 +9,7 @@ import {
   removeTemp,
   checkIsExisted,
 } from './fn'
-import { path } from './const'
 import { renameNovel } from './rename'
-import { txt2html, html2mobi } from './convert'
 
 // function
 

@@ -1,7 +1,8 @@
 import $ from 'fire-keeper'
-import { checkIsExisted, moveToKindle, removeTemp } from './fn'
-import { image2html, html2mobi } from './convert'
+
 import { isWindows, path } from './const'
+import { image2html, html2mobi } from './convert'
+import { checkIsExisted, moveToKindle, removeTemp } from './fn'
 import { renameManga } from './rename'
 
 // function

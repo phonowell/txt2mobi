@@ -1,4 +1,5 @@
 import $ from 'fire-keeper'
+
 import { Config } from '../source/type'
 
 // function
@@ -17,7 +18,7 @@ const main = async () => {
   const result = content
     .replace(
       /export const fileSize = .*/,
-      `export const fileSize = ${fileSize}`
+      `export const fileSize = ${fileSize}`,
     )
     .replace(
       /export const path: Path = [\s\S]*? as const/,
@@ -26,7 +27,7 @@ const main = async () => {
         kindlegen,
         storage,
         temp: './temp/kindle',
-      })} as const`
+      })} as const`,
     )
 
   await $.write('source/const.ts', result)
