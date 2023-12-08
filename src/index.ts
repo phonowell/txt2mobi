@@ -1,17 +1,20 @@
 // import convertManga from './convertManga'
+import { run } from 'fire-keeper'
+
 import convertNovel from './convertNovel'
-import { validateEnvironment } from './fn'
+import { validateEnvironment } from './utils'
 import removeUselessFile from './removeUselessFile'
+import loadConfig from './loadConfig'
 
 // function
 
-const main = async () => {
-  if (!(await validateEnvironment())) return
+run(async () => {
+  const config = await loadConfig()
+
+  if (!(await validateEnvironment(config))) return
 
   // await convertManga()
-  await convertNovel()
-}
+  await convertNovel(config)
 
-// export
-export default main
-export { removeUselessFile }
+  await removeUselessFile(config)
+})

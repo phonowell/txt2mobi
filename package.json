@@ -38,8 +38,8 @@
   },
   "scripts": {
     "alice": "ts-node --swc task/alice.ts",
-    "start": "npm run alice build && npm run alice kindle",
-    "watch": "npm run txt2mobi watch"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "start": "ts-node --swc src/index.ts"
   },
   "url": "https://github.com/phonowell/txt2mobi",
   "version": "0.0.3"

@@ -1,12 +1,16 @@
 import { exec, getBasename, glob, read, remove, write } from 'fire-keeper'
 
-import { isWindows, path } from './const'
-import { formatPathForWindows, makeNewName } from './fn'
+import { isWindows } from './const'
+import { formatPathForWindows, makeNewName } from './utils'
+import { Config } from './loadConfig'
 
-// function
+// functions
 
-const renameManga = async () => {
-  const listSource = await glob([`${path.storage}/*`, `!${path.storage}/*.txt`])
+const renameManga = async (config: Config) => {
+  const listSource = await glob([
+    `${config.storage}/*`,
+    `!${config.storage}/*.txt`,
+  ])
 
   for (const source of listSource) {
     const basename = getBasename(source)
@@ -23,8 +27,8 @@ const renameManga = async () => {
   }
 }
 
-const renameNovel = async () => {
-  const listSource = await glob(`${path.storage}/*.txt`)
+const renameNovel = async (config: Config) => {
+  const listSource = await glob(`${config.storage}/*.txt`)
 
   for (const source of listSource) {
     const basename = getBasename(source)

@@ -1,25 +1,29 @@
 import { exec, getBasename, glob, read, write } from 'fire-keeper'
 
-import { isWindows, path, htmlContainer } from './const'
+import { isWindows, htmlContainer } from './const'
+import { Config } from './loadConfig'
 
-// function
+// functions
 
-const html2mobi = async (source: string) => {
+const html2mobi = async (config: Config, source: string) => {
   const basename = getBasename(source)
   const target = isWindows
-    ? `${path.temp}/${basename}.html`
-    : `"${path.temp}/${basename}.html"`
+    ? `${config.temp}/${basename}.html`
+    : `"${config.temp}/${basename}.html"`
 
-  const cmd = [path.kindlegen, `${target}`, '-c1', '-dont_append_source'].join(
-    ' ',
-  )
+  const cmd = [
+    config.kindlegen,
+    `${target}`,
+    '-c1',
+    '-dont_append_source',
+  ].join(' ')
 
   await exec(cmd)
 }
 
-const image2html = async (source: string) => {
+const image2html = async (config: Config, source: string) => {
   const basename = getBasename(source)
-  const target = `${path.temp}/${basename}.html`
+  const target = `${config.temp}/${basename}.html`
 
   const listImage = await glob(`${source}/*.jpg`)
 
@@ -37,9 +41,9 @@ const image2html = async (source: string) => {
   await write(target, content)
 }
 
-const txt2html = async (source: string) => {
+const txt2html = async (config: Config, source: string) => {
   const basename = getBasename(source)
-  const target = `${path.temp}/${basename}.html`
+  const target = `${config.temp}/${basename}.html`
 
   const content = await read<string>(source)
   if (!content) return

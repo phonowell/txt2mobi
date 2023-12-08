@@ -11,26 +11,26 @@ import {
 import iconv from 'iconv-lite'
 import chunk from 'lodash/chunk'
 
-import { fileSize, path } from './const'
+import { Config } from './loadConfig'
 
 // variable
 
 let cacheMobiName = ''
 
-// function
+// functions
 
-const checkIsExisted = async (source: string) => {
+const checkIsExisted = async (config: Config, source: string) => {
   // fill
   if (!cacheMobiName) {
-    const listSource = await glob(`${path.document}/*.mobi`)
+    const listSource = await glob(`${config.document}/*.mobi`)
     cacheMobiName = listSource.map(src => getBasename(src)).join(', ')
   }
 
   return cacheMobiName.includes(getBasename(source))
 }
 
-const convertEncoding = async () => {
-  const listSource = await glob(`${path.storage}/*.txt`)
+const convertEncoding = async (config: Config) => {
+  const listSource = await glob(`${config.storage}/*.txt`)
 
   for (const source of listSource) {
     const content = await read<string>(source)
@@ -60,24 +60,27 @@ const makeNewName = (name: string) =>
     .replace(/\[/g, '【')
     .replace(/\]/g, '】')
 
-const moveToKindle = async (source: string) => {
+const moveToKindle = async (config: Config, source: string) => {
   const basename = getBasename(source)
-  await copy(`${path.temp}/${basename}.mobi`, path.document)
+  await copy(`${config.temp}/${basename}.mobi`, config.document)
 }
 
-const removeTemp = () => remove(path.temp)
+const removeTemp = (config: Config) => remove(config.temp)
 
-const splitTxt = async (source: string) => {
+const splitTxt = async (config: Config, source: string) => {
   const basename = getBasename(source)
   const content = await read<string>(source)
   if (!content) throw new Error(`found no content in '${source}'`)
 
-  const listGroup = chunk(content.replace(/\r/g, '').split('\n'), fileSize)
+  const listGroup = chunk(
+    content.replace(/\r/g, '').split('\n'),
+    config.fileSize,
+  )
 
   let idx = 1
   const listSource = []
   for (const listContent of listGroup) {
-    const target = `${path.temp}/${basename}-${idx
+    const target = `${config.temp}/${basename}-${idx
       .toString()
       .padStart(2, '0')}.txt`
     await write(target, listContent.join('\n'))
@@ -88,16 +91,16 @@ const splitTxt = async (source: string) => {
   return listSource
 }
 
-const validateEnvironment = async () => {
-  if (!(await isExist(path.kindlegen))) {
+const validateEnvironment = async (config: Config) => {
+  if (!(await isExist(config.kindlegen))) {
     echo(
       "found no 'kindlegen', run 'brew cask install kindlegen' to install it",
     )
     return false
   }
 
-  if (!(await isExist(path.document))) {
-    echo(`found no '${path.document}', kindle must be connected`)
+  if (!(await isExist(config.document))) {
+    echo(`found no '${config.document}', kindle must be connected`)
     return false
   }
 

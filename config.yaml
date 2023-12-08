@@ -1,5 +1,4 @@
 macos:
-
   # kindle上document目录的路径
   document: /Volumes/Kindle/documents
 
@@ -13,7 +12,6 @@ macos:
   storage: ~/OneDrive/书籍/同步
 
 windows:
-
   # kindle上document目录的路径
   document: H:/documents
 

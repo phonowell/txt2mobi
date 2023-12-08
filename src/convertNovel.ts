@@ -1,6 +1,5 @@
 import { glob } from 'fire-keeper'
 
-import { path } from './const'
 import { txt2html, html2mobi } from './convert'
 import {
   convertEncoding,
@@ -8,28 +7,29 @@ import {
   moveToKindle,
   removeTemp,
   checkIsExisted,
-} from './fn'
+} from './utils'
 import { renameNovel } from './rename'
+import { Config } from './loadConfig'
 
 // function
 
-const main = async () => {
-  await renameNovel()
-  await convertEncoding()
+const convertNovel = async (config: Config) => {
+  await renameNovel(config)
+  await convertEncoding(config)
 
-  const listNovel = await glob(`${path.storage}/*.txt`)
+  const listNovel = await glob(`${config.storage}/*.txt`)
   for (const novel of listNovel) {
-    if (await checkIsExisted(novel)) continue
-    const listSrc = await splitTxt(novel)
+    if (await checkIsExisted(config, novel)) continue
+    const listSrc = await splitTxt(config, novel)
     for (const src of listSrc) {
-      await txt2html(src)
-      await html2mobi(src)
-      await moveToKindle(src)
+      await txt2html(config, src)
+      await html2mobi(config, src)
+      await moveToKindle(config, src)
     }
   }
 
-  await removeTemp()
+  await removeTemp(config)
 }
 
 // export
-export default main
+export default convertNovel
