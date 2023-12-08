@@ -54,7 +54,6 @@ build
 dist
 dist-wechat
 public
-src
 
 # compiled
 *.css

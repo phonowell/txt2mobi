@@ -1,6 +1,6 @@
 import { read, os, write, at } from 'fire-keeper'
 
-import { Config } from '../src/type'
+import { Config } from '../src/types'
 
 // function
 
