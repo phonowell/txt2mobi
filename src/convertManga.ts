@@ -1,6 +1,5 @@
 import { glob } from 'fire-keeper'
 
-import { isWindows } from './const'
 import { image2html, html2mobi } from './convert'
 import { checkIsExisted, moveToKindle, removeTemp } from './utils'
 import { renameManga } from './rename'
@@ -9,14 +8,11 @@ import { Config } from './loadConfig'
 // function
 
 const convertManga = async (config: Config) => {
-  if (!isWindows) return
-
   await renameManga(config)
 
-  const listManga = await glob([
-    `${config.storage}/manga/*`,
-    `!${config.storage}/*.txt`,
-  ])
+  const listManga = await glob(`${config.storage}/*`, {
+    onlyDirectories: true,
+  })
 
   for (const manga of listManga) {
     if (await checkIsExisted(config, manga)) continue

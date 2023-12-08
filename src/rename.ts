@@ -7,10 +7,9 @@ import { Config } from './loadConfig'
 // functions
 
 const renameManga = async (config: Config) => {
-  const listSource = await glob([
-    `${config.storage}/*`,
-    `!${config.storage}/*.txt`,
-  ])
+  const listSource = await glob(`${config.storage}/*`, {
+    onlyDirectories: true,
+  })
 
   for (const source of listSource) {
     const basename = getBasename(source)

@@ -10,11 +10,18 @@ const removeUselessFile = async (config: Config) => {
 }
 
 const removeUselessMobi = async (config: Config) => {
-  const listTxt = (await glob(`${config.storage}/*.txt`)).map(getBasename)
+  const listManga = (
+    await glob(`${config.storage}/*`, { onlyDirectories: true })
+  ).map(getBasename)
+  const listNovel = (await glob(`${config.storage}/*.txt`)).map(getBasename)
   const listMobi = (await glob(`${config.document}/*.mobi`)).map(getBasename)
 
   const listResult = listMobi
-    .map(it => (listTxt.includes(it.replace(/-\d+/, '')) ? '' : it))
+    .map(it =>
+      listManga.includes(it) || listNovel.includes(it.replace(/-\d+/, ''))
+        ? ''
+        : it,
+    )
     .filter(it => !!it)
     .map(it => `${config.document}/${it}.mobi`)
 
