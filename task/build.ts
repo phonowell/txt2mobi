@@ -1,6 +1,6 @@
 import { read, os, write, at } from 'fire-keeper'
 
-import { Config } from '../source/type'
+import { Config } from '../src/type'
 
 // function
 
@@ -12,8 +12,8 @@ const main = async () => {
   if (!cfg) throw new Error(`config.yaml: ${os()} not found`)
   const { fileSize, document, kindlegen, storage } = cfg
 
-  const content = await read('source/const.ts')
-  if (!content) throw new Error('source/const.ts not found')
+  const content = await read('src/const.ts')
+  if (!content) throw new Error('src/const.ts not found')
 
   const result = content
     .replace(
@@ -30,7 +30,7 @@ const main = async () => {
       })} as const`,
     )
 
-  await write('source/const.ts', result)
+  await write('src/const.ts', result)
 }
 
 // export

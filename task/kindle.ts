@@ -1,4 +1,4 @@
-import convert, { removeUselessFile } from '../source'
+import convert, { removeUselessFile } from '../src'
 
 // function
 
