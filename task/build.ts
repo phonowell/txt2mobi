@@ -1,18 +1,18 @@
-import $ from 'fire-keeper'
+import { read, os, write, at } from 'fire-keeper'
 
 import { Config } from '../source/type'
 
 // function
 
 const main = async () => {
-  const config = await $.read<Config>('config.yaml')
+  const config = await read<Config>('config.yaml')
   if (!config) throw new Error('config.yaml not found')
 
-  const cfg = config[$.os()]
-  if (!cfg) throw new Error(`config.yaml: ${$.os()} not found`)
+  const cfg = at(config, os())
+  if (!cfg) throw new Error(`config.yaml: ${os()} not found`)
   const { fileSize, document, kindlegen, storage } = cfg
 
-  const content = await $.read('source/const.ts')
+  const content = await read('source/const.ts')
   if (!content) throw new Error('source/const.ts not found')
 
   const result = content
@@ -30,7 +30,7 @@ const main = async () => {
       })} as const`,
     )
 
-  await $.write('source/const.ts', result)
+  await write('source/const.ts', result)
 }
 
 // export

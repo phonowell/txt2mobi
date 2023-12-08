@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { exec } from 'fire-keeper'
 
 // interface
 
@@ -13,21 +13,21 @@ type Result = {
 // function
 
 const main = async () => {
-  const [, raw] = await $.exec('pnpm outdated --json')
+  const [, raw] = await exec('pnpm outdated --json')
   const result = JSON.parse(raw) as Record<string, Result>
 
   const listName = Object.entries(result)
     .filter(it => {
       const [name, data] = it
       if (data.isDeprecated) return false
-      if (name === 'node-fetch') return false
+      if (name === '@swc/core') return false
       return true
     })
     .map(it => it[0])
   if (!listName.length) return
 
   const listCmd = listName.map(name => `pnpm i ${name}@latest`)
-  await $.exec(listCmd)
+  await exec(listCmd)
 }
 
 // export

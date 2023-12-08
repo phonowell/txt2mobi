@@ -8,12 +8,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "jsx": "preserve",
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -22,11 +17,6 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "paths": {
-      "@/*": [
-        "source/*"
-      ]
-    },
     "removeComments": true,
     "resolveJsonModule": true,
     "sourceMap": false,
@@ -35,15 +25,8 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "target": "es2020",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "source/**/*.ts",
-    "source/module/kindle/index.ts"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["source", "task"]
 }

@@ -1,11 +1,11 @@
-import $ from 'fire-keeper'
+import { exec, getBasename, glob, read, write } from 'fire-keeper'
 
 import { isWindows, path, htmlContainer } from './const'
 
 // function
 
 const html2mobi = async (source: string) => {
-  const basename = $.getBasename(source)
+  const basename = getBasename(source)
   const target = isWindows
     ? `${path.temp}/${basename}.html`
     : `"${path.temp}/${basename}.html"`
@@ -14,18 +14,18 @@ const html2mobi = async (source: string) => {
     ' ',
   )
 
-  await $.exec(cmd)
+  await exec(cmd)
 }
 
 const image2html = async (source: string) => {
-  const basename = $.getBasename(source)
+  const basename = getBasename(source)
   const target = `${path.temp}/${basename}.html`
 
-  const listImage = await $.glob(`${source}/*.jpg`)
+  const listImage = await glob(`${source}/*.jpg`)
 
   const listResult: string[] = []
   for (const img of listImage) {
-    const buffer = await $.read(img)
+    const buffer = await read(img)
     if (!buffer) continue
     const html = `<p><img alt='' src='data:image/jpeg;base64,${buffer.toString(
       'base64',
@@ -34,14 +34,14 @@ const image2html = async (source: string) => {
   }
 
   const content = htmlContainer.replace('{{content}}', listResult.join('\n'))
-  await $.write(target, content)
+  await write(target, content)
 }
 
 const txt2html = async (source: string) => {
-  const basename = $.getBasename(source)
+  const basename = getBasename(source)
   const target = `${path.temp}/${basename}.html`
 
-  const content = await $.read<string>(source)
+  const content = await read<string>(source)
   if (!content) return
 
   const listContent = content
@@ -53,7 +53,7 @@ const txt2html = async (source: string) => {
     .filter(it => it)
 
   const result = htmlContainer.replace('{{content}}', listContent.join('\n'))
-  await $.write(target, result)
+  await write(target, result)
 }
 
 // export

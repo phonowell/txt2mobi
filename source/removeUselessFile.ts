@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { getBasename, glob, remove } from 'fire-keeper'
 
 import { path } from './const'
 import { validateEnvironment } from './fn'
@@ -12,8 +12,8 @@ const removeUselessFile = async () => {
 }
 
 const removeUselessMobi = async () => {
-  const listTxt = (await $.glob(`${path.storage}/*.txt`)).map($.getBasename)
-  const listMobi = (await $.glob(`${path.document}/*.mobi`)).map($.getBasename)
+  const listTxt = (await glob(`${path.storage}/*.txt`)).map(getBasename)
+  const listMobi = (await glob(`${path.document}/*.mobi`)).map(getBasename)
 
   const listResult = listMobi
     .map(it => (listTxt.includes(it.replace(/-\d+/, '')) ? '' : it))
@@ -21,14 +21,14 @@ const removeUselessMobi = async () => {
     .map(it => `${path.document}/${it}.mobi`)
 
   if (!listResult.length) return
-  await $.remove(listResult)
+  await remove(listResult)
 }
 
 const removeUselessSdr = async () => {
-  const listMobi = (await $.glob(`${path.document}/*.mobi`)).map($.getBasename)
+  const listMobi = (await glob(`${path.document}/*.mobi`)).map(getBasename)
   const listSdr = (
-    await $.glob(`${path.document}/*.sdr`, { onlyFiles: false })
-  ).map($.getBasename)
+    await glob(`${path.document}/*.sdr`, { onlyFiles: false })
+  ).map(getBasename)
 
   const listResult = listSdr
     .map(it => (listMobi.includes(it) ? '' : it))
@@ -36,7 +36,7 @@ const removeUselessSdr = async () => {
     .map(it => `${path.document}/${it}.sdr`)
 
   if (!listResult.length) return
-  await $.remove(listResult)
+  await remove(listResult)
 }
 
 // export

@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { glob } from 'fire-keeper'
 
 import { isWindows, path } from './const'
 import { image2html, html2mobi } from './convert'
@@ -12,7 +12,7 @@ const main = async () => {
 
   await renameManga()
 
-  const listManga = await $.glob([
+  const listManga = await glob([
     `${path.storage}/manga/*`,
     `!${path.storage}/*.txt`,
   ])

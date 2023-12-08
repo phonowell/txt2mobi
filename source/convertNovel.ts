@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { glob } from 'fire-keeper'
 
 import { path } from './const'
 import { txt2html, html2mobi } from './convert'
@@ -17,7 +17,7 @@ const main = async () => {
   await renameNovel()
   await convertEncoding()
 
-  const listNovel = await $.glob(`${path.storage}/*.txt`)
+  const listNovel = await glob(`${path.storage}/*.txt`)
   for (const novel of listNovel) {
     if (await checkIsExisted(novel)) continue
     const listSrc = await splitTxt(novel)

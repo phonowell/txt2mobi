@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { os } from 'fire-keeper'
 
 import { Path } from './type'
 
@@ -6,12 +6,7 @@ import { Path } from './type'
 
 export const fileSize = 2000
 
-export const path: Path = {
-  document: '/Volumes/Kindle/documents',
-  kindlegen: '~/OneDrive/程序/kindlegen/kindlegen',
-  storage: '~/OneDrive/书籍/同步',
-  temp: './temp/kindle',
-} as const
+export const path: Path = {"document":"/Volumes/Kindle/documents","kindlegen":"~/OneDrive/程序/kindlegen/kindlegen","storage":"~/OneDrive/书籍/同步","temp":"./temp/kindle"} as const
 
 export const htmlContainer = [
   '<html lang="zh-cmn-Hans">',
@@ -24,4 +19,4 @@ export const htmlContainer = [
   '</html>',
 ].join('')
 
-export const isWindows = $.os() === 'windows'
+export const isWindows = os() === 'windows'

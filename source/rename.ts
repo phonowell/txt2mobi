@@ -1,4 +1,4 @@
-import $ from 'fire-keeper'
+import { exec, getBasename, glob, read, remove, write } from 'fire-keeper'
 
 import { isWindows, path } from './const'
 import { formatPathForWindows, makeNewName } from './fn'
@@ -6,13 +6,10 @@ import { formatPathForWindows, makeNewName } from './fn'
 // function
 
 const renameManga = async () => {
-  const listSource = await $.glob([
-    `${path.storage}/*`,
-    `!${path.storage}/*.txt`,
-  ])
+  const listSource = await glob([`${path.storage}/*`, `!${path.storage}/*.txt`])
 
   for (const source of listSource) {
-    const basename = $.getBasename(source)
+    const basename = getBasename(source)
     const basename2 = makeNewName(basename)
     if (basename2 === basename) continue
 
@@ -22,22 +19,22 @@ const renameManga = async () => {
       ? `ren '${formatPathForWindows(source)}' '${basename2}'`
       : `mv "${source}" "${src}"`
 
-    await $.exec(line)
+    await exec(line)
   }
 }
 
 const renameNovel = async () => {
-  const listSource = await $.glob(`${path.storage}/*.txt`)
+  const listSource = await glob(`${path.storage}/*.txt`)
 
   for (const source of listSource) {
-    const basename = $.getBasename(source)
+    const basename = getBasename(source)
     const basename2 = makeNewName(basename)
     if (basename2 === basename) continue
 
     const src = source.replace(/[[\]]/g, '*')
-    const content = await $.read(src)
-    await $.remove(src)
-    await $.write(source.replace(basename, basename2), content)
+    const content = await read(src)
+    await remove(src)
+    await write(source.replace(basename, basename2), content)
   }
 }
 
