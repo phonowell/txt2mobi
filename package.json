@@ -8,8 +8,8 @@
     "@swc/core": "^1.3.100",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.10.4",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
-    "@typescript-eslint/parser": "^6.13.2",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
@@ -20,8 +20,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "fire-keeper": "^0.0.212",
     "iconv-lite": "^0.6.3",
-    "prettier": "^3.1.0",
-    "ts-node": "^10.9.1",
+    "jimp": "^0.22.10",
+    "prettier": "^3.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "description": "txt2mobi",
@@ -42,5 +43,5 @@
     "start": "ts-node --swc src/index.ts"
   },
   "url": "https://github.com/phonowell/txt2mobi",
-  "version": "0.0.3"
+  "version": "0.0.4"
 }

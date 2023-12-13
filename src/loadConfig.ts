@@ -6,6 +6,8 @@ type Config = {
   document: string
   fileSize: number
   kindlegen: string
+  maxWidth: number
+  quality: number
   storage: string
   temp: string
 }

@@ -8,6 +8,12 @@ macos:
   # kindlegen.exe的路径
   kindlegen: ~/OneDrive/程序/kindlegen/kindlegen
 
+  # 图片最大宽度
+  maxWidth: 1280
+
+  # 图片压缩质量
+  quality: 80
+
   # txt仓库路径
   storage: ~/OneDrive/书籍/同步
 
@@ -20,6 +26,12 @@ windows:
 
   # kindlegen.exe的路径
   kindlegen: E:/OneDrive/程序/kindlegen/kindlegen.exe
+
+  # 图片最大宽度
+  maxWidth: 1280
+
+  # 图片压缩质量
+  quality: 80
 
   # txt仓库路径
   storage: E:/OneDrive/书籍/同步

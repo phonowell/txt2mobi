@@ -1,4 +1,5 @@
 import { exec, getBasename, glob, read, write } from 'fire-keeper'
+import jimp from 'jimp'
 
 import { isWindows, htmlContainer } from './const'
 import { Config } from './loadConfig'
@@ -25,15 +26,24 @@ const image2html = async (config: Config, source: string) => {
   const basename = getBasename(source)
   const target = `${config.temp}/${basename}.html`
 
-  const listImage = await glob(`${source}/*.jpg`)
+  const listSource = await glob(`${source}/*.jpg`)
 
   const listResult: string[] = []
-  for (const img of listImage) {
-    const buffer = await read(img)
-    if (!buffer) continue
+  for (const source of listSource) {
+    const image = await jimp.read(source)
+    if (image.getWidth() > image.getHeight()) image.rotate(90)
+
+    const width = image.getWidth()
+    if (width > config.maxWidth) image.resize(config.maxWidth, jimp.AUTO)
+
+    image.greyscale()
+    image.quality(config.quality)
+
+    const buffer = await image.getBufferAsync(jimp.MIME_JPEG)
     const html = `<p><img alt='' src='data:image/jpeg;base64,${buffer.toString(
       'base64',
     )}'></p>`
+
     listResult.push(html)
   }
 

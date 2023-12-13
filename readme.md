@@ -1,36 +1,19 @@
 # txt2mobi
 
-傻瓜化同步txt文件到kindle
+将`.txt`文件转为`.mobi`并同步至你的`Kindle`设备。
 
-Sync txt files to kindle for dummies
+现在连漫画也可以同步啦！
 
-## 如何使用 How to use
+## 如何使用
 
--
-  下载项目；`git clone`或者`download`都行
+- 确保你已经基本了解`git`、`nodejs`和`pnpm`，并且已经安装好了
 
-  Download the project; `git clone` or `download` is ok
+- 准备好`kindlegen.exe`，想办法搞到它
 
--
-  安装依赖；`nodejs`和`pnpm i`
+- 修改根目录下的`config.yaml`
 
-  Install dependencies; `nodejs` and `pnpm i`
+- 插好kindle，执行`pnpm start`
 
--
-  准备好`kindlegen.exe`
-
-  Prepare `kindlegen.exe`
-
--
-  修改`config.yaml`
-
-  Modify `config.yaml`
-
--
-  插好kindle，执行`npm run start`
-
-  Plug in kindle, execute `npm run start`
-
-## 联系我 Contact me
+## 联系我
 
 QQ：515565970
