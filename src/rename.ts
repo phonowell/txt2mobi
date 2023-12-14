@@ -1,13 +1,34 @@
 import { exec, getBasename, glob, read, remove, write } from 'fire-keeper'
 
 import { isWindows } from './const'
-import { formatPathForWindows, makeNewName } from './utils'
 import { Config } from './loadConfig'
 
 // functions
 
+const formatPathForWindows = (input: string) =>
+  input.replace(/\[/g, '`[').replace(/\]/g, '`]')
+
+const makeNewName = (name: string) =>
+  name
+    .replace(/!/g, '！')
+    .replace(/,/g, '，')
+    .replace(/:/g, '：')
+    .replace(/\?/g, '？')
+
+    // remove (xxx)
+    .replace(/\(.*?\)/g, '')
+    // remove [xxx]
+    .replace(/\[.*?\]/g, '')
+    // remove {xxx}
+    .replace(/\{.*?\}/g, '')
+    // remove <xxx>
+    .replace(/<.*?>/g, '')
+
+    .replace(/\s{2,}/, ' ')
+    .trim()
+
 const renameManga = async (config: Config) => {
-  const listSource = await glob(`${config.storage}/*`, {
+  const listSource = await glob(`${config.mangaStorage}/*`, {
     onlyDirectories: true,
   })
 
@@ -27,7 +48,7 @@ const renameManga = async (config: Config) => {
 }
 
 const renameNovel = async (config: Config) => {
-  const listSource = await glob(`${config.storage}/*.txt`)
+  const listSource = await glob(`${config.novelStorage}/*.txt`)
 
   for (const source of listSource) {
     const basename = getBasename(source)

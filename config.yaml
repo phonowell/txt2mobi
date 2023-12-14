@@ -1,12 +1,21 @@
-macos:
-  # kindle上document目录的路径
-  document: /Volumes/Kindle/documents
-
-  # 书籍分割的行数
-  fileSize: 2000
+# 基础
+basic:
+  # kindle设备上documents目录的路径
+  documents:
+    macos: /Volumes/Kindle/documents
+    windows: H:/documents
 
   # kindlegen.exe的路径
-  kindlegen: ~/OneDrive/程序/kindlegen/kindlegen
+  kindlegen:
+    macos: ~/OneDrive/程序/kindlegen/kindlegen
+    windows: E:/OneDrive/程序/kindlegen/kindlegen.exe
+
+# 漫画
+manga:
+  # 仓库路径
+  storage:
+    macos: ~/Downloads/manga
+    windows: F:/漫画/同步
 
   # 图片最大宽度
   maxWidth: 1280
@@ -14,24 +23,12 @@ macos:
   # 图片压缩质量
   quality: 80
 
-  # txt仓库路径
-  storage: ~/OneDrive/书籍/同步
-
-windows:
-  # kindle上document目录的路径
-  document: H:/documents
+# 小说
+novel:
+  # 仓库路径
+  storage:
+    macos: ~/OneDrive/书籍/同步
+    windows: E:/OneDrive/书籍/同步
 
   # 书籍分割的行数
   fileSize: 2000
-
-  # kindlegen.exe的路径
-  kindlegen: E:/OneDrive/程序/kindlegen/kindlegen.exe
-
-  # 图片最大宽度
-  maxWidth: 1280
-
-  # 图片压缩质量
-  quality: 80
-
-  # txt仓库路径
-  storage: E:/OneDrive/书籍/同步

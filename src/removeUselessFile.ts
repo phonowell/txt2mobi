@@ -11,10 +11,12 @@ const removeUselessFile = async (config: Config) => {
 
 const removeUselessMobi = async (config: Config) => {
   const listManga = (
-    await glob(`${config.storage}/*`, { onlyDirectories: true })
+    await glob(`${config.mangaStorage}/*`, { onlyDirectories: true })
   ).map(getBasename)
-  const listNovel = (await glob(`${config.storage}/*.txt`)).map(getBasename)
-  const listMobi = (await glob(`${config.document}/*.mobi`)).map(getBasename)
+  const listNovel = (await glob(`${config.novelStorage}/*.txt`)).map(
+    getBasename,
+  )
+  const listMobi = (await glob(`${config.documents}/*.mobi`)).map(getBasename)
 
   const listResult = listMobi
     .map(it =>
@@ -23,22 +25,22 @@ const removeUselessMobi = async (config: Config) => {
         : it,
     )
     .filter(it => !!it)
-    .map(it => `${config.document}/${it}.mobi`)
+    .map(it => `${config.documents}/${it}.mobi`)
 
   if (!listResult.length) return
   await remove(listResult)
 }
 
 const removeUselessSdr = async (config: Config) => {
-  const listMobi = (await glob(`${config.document}/*.mobi`)).map(getBasename)
+  const listMobi = (await glob(`${config.documents}/*.mobi`)).map(getBasename)
   const listSdr = (
-    await glob(`${config.document}/*.sdr`, { onlyFiles: false })
+    await glob(`${config.documents}/*.sdr`, { onlyFiles: false })
   ).map(getBasename)
 
   const listResult = listSdr
     .map(it => (listMobi.includes(it) ? '' : it))
     .filter(it => !!it)
-    .map(it => `${config.document}/${it}.sdr`)
+    .map(it => `${config.documents}/${it}.sdr`)
 
   if (!listResult.length) return
   await remove(listResult)
