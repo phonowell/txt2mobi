@@ -15,6 +15,10 @@ const makeNewName = (name: string) =>
     .replace(/:/g, '：')
     .replace(/\?/g, '？')
 
+    // remove 《 & 》
+    .replace(/《/g, '')
+    .replace(/》/g, '')
+
     // remove (xxx)
     .replace(/\(.*?\)/g, '')
     // remove [xxx]
