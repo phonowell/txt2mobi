@@ -7,8 +7,8 @@ basic:
 
   # kindlegen.exe的路径
   kindlegen:
-    macos: ~/OneDrive/程序/kindlegen/kindlegen
-    windows: E:/OneDrive/程序/kindlegen/kindlegen.exe
+    macos: ~/OneDrive/programs/kindlegen/kindlegen
+    windows: E:/OneDrive/programs/kindlegen/kindlegen.exe
 
 # 漫画
 manga:
@@ -27,8 +27,8 @@ manga:
 novel:
   # 仓库路径
   storage:
-    macos: ~/OneDrive/书籍/同步
-    windows: E:/OneDrive/书籍/同步
+    macos: ~/OneDrive/books/同步
+    windows: E:/OneDrive/books/同步
 
   # 书籍分割的行数
   fileSize: 2000
