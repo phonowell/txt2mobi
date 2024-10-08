@@ -15,9 +15,11 @@ const convertEncoding = async (config: Config) => {
   for (const source of listSource) {
     const content = await read<string>(source)
     if (!content) continue
-    if (~content.search(/我/u)) continue
+    if (content.includes('我')) continue
 
-    const content2 = await read(source, { raw: true })
+    const content2 = await read(source, {
+      raw: true,
+    })
     if (!content2) continue
 
     const buffer = iconv.encode(iconv.decode(content2, 'gb2312'), 'utf-8')
