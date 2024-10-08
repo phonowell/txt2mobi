@@ -1,4 +1,4 @@
-import jimp from 'jimp'
+import { Jimp } from 'jimp'
 import { getBasename, glob, write } from 'fire-keeper'
 
 import { checkIsExist, html2mobi, moveToKindle, removeTemp } from './utils'
@@ -37,17 +37,20 @@ const image2html = async (config: Config, source: string) => {
 
   const listResult: string[] = []
   for (const source of listSource) {
-    const image = await jimp.read(source)
-    if (image.getWidth() > image.getHeight()) image.rotate(90)
+    const image = await Jimp.read(source)
+    if (image.width > image.height) image.rotate(90)
 
-    const width = image.getWidth()
+    const { width } = image
     if (width > config.mangaMaxWidth)
-      image.resize(config.mangaMaxWidth, jimp.AUTO)
+      image.resize({
+        w: config.mangaMaxWidth,
+      })
 
     image.greyscale()
-    image.quality(config.mangaQuality)
 
-    const buffer = await image.getBufferAsync(jimp.MIME_JPEG)
+    const buffer = await image.getBuffer('image/jpeg', {
+      quality: config.mangaQuality,
+    })
     const html = `<p><img alt='' src='data:image/jpeg;base64,${buffer.toString(
       'base64',
     )}'></p>`
