@@ -59,7 +59,7 @@ const renameNovel = async (config: Config) => {
     const basename2 = makeNewName(basename)
     if (basename2 === basename) continue
 
-    const src = source.replace(/[[\]]/g, '*')
+    const src = source.replace(/[[\]()]/g, '*')
     const content = await read(src)
     await remove(src)
     await write(source.replace(basename, basename2), content)

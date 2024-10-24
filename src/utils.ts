@@ -33,15 +33,12 @@ const html2mobi = async (config: Config, source: string) => {
     ? `${config.temp}/${basename}.html`
     : `"${config.temp}/${basename}.html"`
 
-  const cmd = [
-    config.kindlegen,
-    `${target}`,
-    '-c1',
-    '-dont_append_source',
-  ].join(' ')
+  const cmd = [config.kindlegen, target, '-c1', '-dont_append_source'].join(' ')
 
   await exec(cmd)
 }
+
+const makeRandomId = () => Math.random().toString(36).substring(2, 15)
 
 const moveToKindle = async (config: Config, source: string) => {
   const basename = getBasename(source)
@@ -70,6 +67,7 @@ const validateEnvironment = async (config: Config) => {
 export {
   checkIsExist,
   html2mobi,
+  makeRandomId,
   moveToKindle,
   removeTemp,
   validateEnvironment,

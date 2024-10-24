@@ -3,7 +3,7 @@ import iconv from 'iconv-lite'
 import { getBasename, glob, read, write } from 'fire-keeper'
 
 import { Config } from './loadConfig'
-import { moveToKindle, removeTemp, checkIsExist, html2mobi } from './utils'
+import { moveToKindle, html2mobi, checkIsExist, removeTemp } from './utils'
 import { renameNovel } from './rename'
 import { htmlContainer } from './const'
 
@@ -77,6 +77,8 @@ const txt2html = async (config: Config, source: string) => {
   if (!content) return
 
   const listContent = content
+    // remove images
+    .replace(/!\[.*?\]\(.*?\)/g, '')
     .split('\n')
     .map(l => {
       const line = l.trim()
