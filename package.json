@@ -42,5 +42,5 @@
     "start": "ts-node --swc src/index.ts"
   },
   "url": "https://github.com/phonowell/txt2mobi",
-  "version": "0.0.4"
+  "version": "0.0.5"
 }
