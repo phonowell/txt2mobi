@@ -1,21 +1,17 @@
-// import convertManga from './convertManga'
 import { run } from 'fire-keeper'
 
-import convertNovel from './convertNovel'
-import { validateEnvironment } from './utils'
-import removeUselessFile from './removeUselessFile'
-import loadConfig from './loadConfig'
-import convertManga from './convertManga'
-
-// function
+import { loadConfig } from './core/config.js'
+import { convertManga, convertNovel } from './core/converter.js'
+import { removeOrphaned } from './utils/file.js'
+import { validateEnv } from './utils/kindle.js'
 
 run(async () => {
   const config = await loadConfig()
 
-  if (!(await validateEnvironment(config))) return
+  if (!(await validateEnv(config))) return
 
   await convertManga(config)
   await convertNovel(config)
 
-  await removeUselessFile(config)
+  await removeOrphaned(config)
 })

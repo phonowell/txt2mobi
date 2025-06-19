@@ -30,5 +30,5 @@ novel:
     macos: ~/OneDrive/books/同步
     windows: E:/OneDrive/books/同步
 
-  # 书籍分割的行数
-  fileSize: 20000
+  # 书籍分割的字数
+  fileSize: 200000

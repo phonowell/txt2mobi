@@ -4,27 +4,40 @@
     "url": "https://github.com/phonowell/txt2mobi/issues"
   },
   "dependencies": {
-    "@llc1123/eslint-config": "^1.9.0",
-    "@swc/core": "^1.8.0",
-    "@types/node": "^22.8.7",
-    "@typescript-eslint/eslint-plugin": "^8.13.0",
-    "@typescript-eslint/parser": "^8.13.0",
-    "eslint": "8.57.0",
-    "eslint-config-prettier": "^9.1.0",
+    "clsx": "^2.1.1",
+    "coffee-ahk": "^0.0.59",
+    "fire-keeper": "^0.0.227",
+    "iconv-lite": "^0.6.3",
+    "jimp": "^1.6.0",
+    "radash": "^12.1.1",
+    "web-vitals": "^5.0.3"
+  },
+  "description": "txt2mobi",
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "@types/react": "^17.0.59",
+    "@types/react-dom": "^17.0.20",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "@vitejs/plugin-react-swc": "^3.10.2",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^5.5.0",
     "eslint-plugin-react": "^7.37.1",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "fire-keeper": "^0.0.215",
-    "iconv-lite": "^0.6.3",
-    "jimp": "^1.6.0",
-    "prettier": "^3.3.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "terser": "^5.43.1",
+    "ts-morph": "^26.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "unplugin-auto-import": "^19.3.0"
   },
-  "description": "txt2mobi",
   "homepage": "https://github.com/phonowell/txt2mobi",
   "keywords": [
     "txt2mobi"
@@ -37,10 +50,11 @@
     "url": "https://github.com/phonowell/txt2mobi.git"
   },
   "scripts": {
-    "alice": "ts-node --swc task/alice.ts",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "start": "ts-node --swc src/index.ts"
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"task/**/*.ts\" --fix",
+    "start": "tsx src/index.ts",
+    "task": "tsx task/index.ts"
   },
+  "type": "module",
   "url": "https://github.com/phonowell/txt2mobi",
   "version": "0.0.5"
 }
