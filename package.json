@@ -36,7 +36,8 @@
     "ts-morph": "^26.0.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "unplugin-auto-import": "^19.3.0"
+    "unplugin-auto-import": "^19.3.0",
+    "vitest": "^3.2.4"
   },
   "homepage": "https://github.com/phonowell/txt2mobi",
   "keywords": [
@@ -52,7 +53,8 @@
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"task/**/*.ts\" --fix",
     "start": "tsx src/index.ts",
-    "task": "tsx task/index.ts"
+    "task": "tsx task/index.ts",
+    "test": "vitest run"
   },
   "type": "module",
   "url": "https://github.com/phonowell/txt2mobi",
