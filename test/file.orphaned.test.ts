@@ -48,7 +48,7 @@ describe('file utils - removeOrphaned', () => {
         '/mock/documents/1.mobi',
       ])
       .mockResolvedValueOnce(['/mock/documents/3.sdr', '/mock/documents/2.sdr'])
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.removeOrphaned(mockConfig)
     expect(remove).toHaveBeenCalled()
   })
@@ -62,14 +62,14 @@ describe('file utils - removeOrphaned', () => {
         '/mock/documents/2.mobi',
       ])
       .mockResolvedValueOnce(['/mock/documents/1.sdr', '/mock/documents/2.sdr'])
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.removeOrphaned(mockConfig)
     expect(remove).not.toHaveBeenCalled()
   })
 
   it('should handle glob throwing error', async () => {
     glob.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await expect(fileUtils.removeOrphaned(mockConfig)).rejects.toThrow('fail')
   })
 })

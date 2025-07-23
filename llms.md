@@ -6,6 +6,8 @@ llms.md
 
 ## 1. agent维护规则
 
+- 源码每次变更后，**必须执行全部测试用例，确保所有新旧逻辑均被充分覆盖，测试全部通过后方可提交**
+- 所有新增或修改的代码**必须严格遵循 eslint.config.mjs 中的规范，提交前必须通过所有 ESLint 检查，禁止有任何风格错误或警告**
 - 仅保留结构化、机器可解析关键信息，按重要性排序，优先入口、导出、依赖、构建、产物、自动化、测试等
 - 自动提取、同步更新，保持准确性和时效性
 - 新增、删除、变更需同步更新相关条目，保持格式一致
@@ -31,7 +33,7 @@ llms.md
 
 ## 6. 目录结构
 
-- src/core/（核心逻辑）
+- src/core/（核心逻辑，已拆分为 processor.images.ts、processor.text.ts、processor.mobi.ts、processor.encoding.ts，主入口 processor.ts 统一导出）
 - src/utils/（通用工具）
 - src/index.ts（主入口）
 - task/（自动化脚本）
@@ -77,13 +79,15 @@ llms.md
 - test/ 目录存在，已覆盖以下核心功能模块：
   - 配置加载与平台兼容（config.basic.test.ts, config.platform.test.ts）
   - 文件名清理与异常（file.manga.test.ts, file.novel.test.ts, file.orphaned.test.ts）
+    - cleanName 规则已覆盖所有平台保留字符过滤与文件名长度限制（最大 20 字符）
+    - 测试用例已补充保留字符、超长文件名等边界与异常场景
   - 临时目录清理（file.temp.test.ts）
   - Kindle 工具与推送（kindle.env.test.ts, kindle.mobi.test.ts, kindle.move.test.ts）
   - 处理器接口与功能（processor.export.test.ts, processor.images.test.ts, processor.mobi.test.ts, processor.split.test.ts, processor.text.test.ts, processor.encoding.test.ts）
   - manga/novel 转换流程与异常（converter.manga.test.ts, converter.manga.error.test.ts, converter.misc.test.ts）
 - 用例均采用 ESM 规范，全部使用 import/await import/vi.mock
 - 测试框架统一为 vitest，禁止 jest
-- 所有 import 路径必须带文件名后缀（.js/.ts），未遵守视为错误
+- 所有 ESM import 路径必须带文件名后缀，且仅允许使用 .js/.jsx，禁止使用 .ts/.tsx 后缀，未遵守视为错误
 - 用例覆盖全面，结构合理，无明显冗余或重复，建议持续补充边界场景
 
 ## 15. 典型调用
@@ -95,6 +99,6 @@ llms.md
 
 - test/ 目录下所有用例可通过 pnpm test 或 vitest 统一运行
 - 已检测到 19 个单测文件，覆盖所有核心功能模块及异常场景
-
+- 覆盖率报告获取：**必须使用 `npx vitest --coverage --run` 获取覆盖率报告，确保所有核心逻辑和工具函数均有充分测试。**
 
 # EOF

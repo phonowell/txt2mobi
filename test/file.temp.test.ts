@@ -28,14 +28,14 @@ const mockConfig = {
 
 describe('file utils - cleanTempDir', () => {
   it('should call remove with temp path', async () => {
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanTempDir(mockConfig)
     expect(remove).toHaveBeenCalledWith(mockConfig.temp)
   })
 
   it('should handle remove throwing error', async () => {
     remove.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await expect(fileUtils.cleanTempDir(mockConfig)).rejects.toThrow()
   })
 })

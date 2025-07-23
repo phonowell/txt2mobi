@@ -39,7 +39,7 @@ const mockConfig = {
 describe('file utils - cleanMangaNames', () => {
   it('should rename directories with dirty names', async () => {
     glob.mockResolvedValue(['/mock/manga/dirty[1]', '/mock/manga/clean'])
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
     const { exec } = await import('fire-keeper')
     expect(exec).toHaveBeenCalled()
@@ -47,7 +47,7 @@ describe('file utils - cleanMangaNames', () => {
 
   it('should skip already clean names', async () => {
     glob.mockResolvedValue(['/mock/manga/clean'])
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
     const { exec } = await import('fire-keeper')
     expect(exec).not.toHaveBeenCalled()
@@ -55,7 +55,7 @@ describe('file utils - cleanMangaNames', () => {
 
   it('should handle empty manga directory', async () => {
     glob.mockResolvedValue([])
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
     const { exec } = await import('fire-keeper')
     expect(exec).not.toHaveBeenCalled()
@@ -63,7 +63,33 @@ describe('file utils - cleanMangaNames', () => {
 
   it('should handle glob throwing error', async () => {
     glob.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/file.js')
+    const fileUtils = await import('../src/utils/basic.js')
     await expect(fileUtils.cleanMangaNames(mockConfig)).rejects.toThrow('fail')
+  })
+
+  it('should clean reserved characters and limit length', async () => {
+    glob.mockResolvedValue([
+      '/mock/manga/dirty\\/:*?"<>|',
+      `/mock/manga/${'b'.repeat(120)}`,
+    ])
+    const fileUtils = await import('../src/utils/basic.js')
+    await fileUtils.cleanMangaNames(mockConfig)
+    const { exec } = await import('fire-keeper')
+    const execMock = vi.mocked(exec)
+    // 英文保留字符应被移除（允许中文符号）
+    const mvMatch =
+      typeof execMock.mock.calls[0][0] === 'string'
+        ? execMock.mock.calls[0][0].match(/mv ".*\/(.+)" ".*\/(.+)"/)
+        : null
+    const newName = mvMatch?.[2]
+    expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
+    expect(newName).toMatch(/[：？]/)
+    // 文件名长度应被限制
+    const callArg = execMock.mock.calls[1][0]
+    const match =
+      typeof callArg === 'string'
+        ? callArg.match(/mv ".*\/(.+)" ".*\/(.+)"/)
+        : null
+    expect(match?.[2]?.length).toBeLessThanOrEqual(20)
   })
 })

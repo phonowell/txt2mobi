@@ -4,10 +4,16 @@
  */
 import { afterEach, beforeEach, vi } from 'vitest'
 
+import type { Mock } from 'vitest'
+
 /** mock: fire-keeper.write */
 export const mockWrite = vi.fn()
 /** mock: fire-keeper.read */
-export const mockRead = vi.fn(() => Promise.resolve('mock content'))
+export const mockRead: Mock<
+  (path: string, _opts?: { raw?: boolean }) => Promise<string | Buffer>
+> = vi.fn((_path: string, _opts?: { raw?: boolean }) =>
+  Promise.resolve('mock content'),
+)
 /** mock: fire-keeper.glob */
 export const mockGlob = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
   Promise.resolve([]),
