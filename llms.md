@@ -27,8 +27,7 @@ llms.md
 
 ## 5. 依赖
 
-- 运行: fire-keeper, axios, clsx, coffee-ahk, iconv-lite, jimp, radash, web-vitals
-- 构建/开发: typescript, tsx, @swc/core, @swc/helpers, @types/node, @typescript-eslint/eslint-plugin, @typescript-eslint/parser, eslint, eslint-config-prettier, eslint-plugin-import, eslint-plugin-prettier, eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-react-refresh, eslint-plugin-unused-imports, eslint-plugin-jsx-a11y, eslint-config-react-app, globals, prettier, radash, vitest, ts-morph, unplugin-auto-import, terser
+- 仅保留关键依赖：fire-keeper, axios, iconv-lite, jimp, radash, vitest
 
 ## 6. 目录结构
 
@@ -41,18 +40,12 @@ llms.md
 
 ## 7. 构建与脚本
 
-- lint: eslint "src/**/\*.{ts,tsx}" "task/**/\*.ts" --fix
-- start: tsx src/index.ts
-- task: tsx task/index.ts
-- 产物目录: temp/（中间文件、缓存）
+- 仅保留主入口脚本：start: tsx src/index.ts
+- 任务入口：task: tsx task/index.ts
 
 ## 8. 配置文件
 
-- tsconfig.json
-- eslint.config.mjs
-- config.yaml
-- pnpm-lock.yaml
-- package.json
+- 保留关键配置文件：tsconfig.json, config.yaml, package.json
 
 ## 9. 自动化脚本
 
@@ -77,15 +70,21 @@ llms.md
 
 ## 13. 产物
 
-- 产物目录：temp/（中间文件、缓存等，非最终用户产物）
-- 最终产物：无固定导出产物，mobi 文件直接同步至 Kindle 设备（config.yaml: documents 路径）
+- mobi 文件直接同步至 Kindle 设备（config.yaml: documents 路径）
 
 ## 14. 测试规范
 
-- test/ 目录不存在，当前无单测
-- ESM规范，全部用例采用 import/await import/vi.mock（如后续添加测试）
+- test/ 目录存在，已覆盖以下核心功能模块：
+  - 配置加载与平台兼容（config.basic.test.ts, config.platform.test.ts）
+  - 文件名清理与异常（file.manga.test.ts, file.novel.test.ts, file.orphaned.test.ts）
+  - 临时目录清理（file.temp.test.ts）
+  - Kindle 工具与推送（kindle.env.test.ts, kindle.mobi.test.ts, kindle.move.test.ts）
+  - 处理器接口与功能（processor.export.test.ts, processor.images.test.ts, processor.mobi.test.ts, processor.split.test.ts, processor.text.test.ts, processor.encoding.test.ts）
+  - manga/novel 转换流程与异常（converter.manga.test.ts, converter.manga.error.test.ts, converter.misc.test.ts）
+- 用例均采用 ESM 规范，全部使用 import/await import/vi.mock
 - 测试框架统一为 vitest，禁止 jest
 - 所有 import 路径必须带文件名后缀（.js/.ts），未遵守视为错误
+- 用例覆盖全面，结构合理，无明显冗余或重复，建议持续补充边界场景
 
 ## 15. 典型调用
 
@@ -94,10 +93,8 @@ llms.md
 
 ## 16. 单测运行
 
-- 未检测到单测
+- test/ 目录下所有用例可通过 pnpm test 或 vitest 统一运行
+- 已检测到 19 个单测文件，覆盖所有核心功能模块及异常场景
 
-## 17. 行数规范
-
-- 所有函数文件（.ts/.js/.tsx/.jsx）单文件不得超过90行，超出需拆分
 
 # EOF

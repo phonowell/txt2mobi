@@ -40,7 +40,7 @@ export const mockIconv = {
  * 可在各测试文件顶层直接调用
  * 支持自定义 mock 行为（如 mockRead.mockImplementation）
  */
-export function setupProcessorMocks() {
+export const setupProcessorMocks = () => {
   vi.mock('fire-keeper', () => ({
     write: mockWrite,
     read: mockRead,
@@ -68,7 +68,7 @@ export function setupProcessorMocks() {
  * 清理所有 processor 相关 mock
  * 可用于 beforeEach/afterEach
  */
-export function clearProcessorMocks() {
+export const clearProcessorMocks = () => {
   mockWrite.mockClear()
   mockRead.mockClear()
   mockGlob.mockClear()
@@ -83,6 +83,6 @@ export function clearProcessorMocks() {
 /**
  * 恢复所有 mock（如 vi.restoreAllMocks），可用于 afterEach
  */
-export function restoreProcessorMocks() {
+export const restoreProcessorMocks = () => {
   vi.restoreAllMocks()
 }
