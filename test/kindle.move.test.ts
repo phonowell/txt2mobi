@@ -1,6 +1,15 @@
 // vitest for moveToKindle
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+// 类型声明
+declare global {
+  var isExistMock: ReturnType<typeof vi.fn>
+  var globMock: ReturnType<typeof vi.fn>
+  var copyMock: ReturnType<typeof vi.fn>
+  var getBasenameMock: ReturnType<typeof vi.fn>
+  var echoMock: ReturnType<typeof vi.fn>
+}
+
 globalThis.isExistMock = vi.fn()
 globalThis.globMock = vi.fn()
 globalThis.copyMock = vi.fn()

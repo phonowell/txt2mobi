@@ -43,32 +43,31 @@ describe('fixEncoding', () => {
     ).resolves.not.toThrow()
     // 只校验流程，不断言 mockWrite
   })
-  // 新增：自动编码检测与转换测试
-  it('自动检测 gb2312 编码并转换为 utf-8', async () => {
+  it('自动检测编码并转换 (gb2312->utf8, utf8保持)', async () => {
+    const config = {
+      documents: '/mock/documents',
+      kindlegen: '/bin/kindlegen',
+      mangaMaxWidth: 1280,
+      mangaQuality: 80,
+      mangaStorage: '/mock/manga',
+      novelFileSize: 2,
+      novelStorage: '/mock/novel',
+      temp: '/tmp',
+    }
+
+    // 测试 gb2312 转换
     mockGlob.mockResolvedValueOnce(['/mock/novel/2.txt'])
     mockRead.mockResolvedValueOnce('')
-    // gb2312 编码内容
     const gb2312Buffer = Buffer.from([0xc4, 0xe3, 0xba, 0xc3]) // "你好" in gb2312
     mockRead.mockImplementationOnce((_path, opts) => {
       if (opts?.raw) return Promise.resolve(gb2312Buffer)
       return Promise.resolve('')
     })
-    const mod = await import('../src/core/processor.js')
-    await expect(
-      mod.fixEncoding({
-        documents: '/mock/documents',
-        kindlegen: '/bin/kindlegen',
-        mangaMaxWidth: 1280,
-        mangaQuality: 80,
-        mangaStorage: '/mock/manga',
-        novelFileSize: 2,
-        novelStorage: '/mock/novel',
-        temp: '/tmp',
-      }),
-    ).resolves.not.toThrow()
-  })
 
-  it('自动检测 utf-8 编码并保持不变', async () => {
+    const mod = await import('../src/core/processor.js')
+    await expect(mod.fixEncoding(config)).resolves.not.toThrow()
+
+    // 测试 utf-8 保持
     mockGlob.mockResolvedValueOnce(['/mock/novel/3.txt'])
     mockRead.mockResolvedValueOnce('')
     const utf8Buffer = Buffer.from('你好', 'utf-8')
@@ -76,18 +75,7 @@ describe('fixEncoding', () => {
       if (opts?.raw) return Promise.resolve(utf8Buffer)
       return Promise.resolve('')
     })
-    const mod = await import('../src/core/processor.js')
-    await expect(
-      mod.fixEncoding({
-        documents: '/mock/documents',
-        kindlegen: '/bin/kindlegen',
-        mangaMaxWidth: 1280,
-        mangaQuality: 80,
-        mangaStorage: '/mock/manga',
-        novelFileSize: 2,
-        novelStorage: '/mock/novel',
-        temp: '/tmp',
-      }),
-    ).resolves.not.toThrow()
+
+    await expect(mod.fixEncoding(config)).resolves.not.toThrow()
   })
 })

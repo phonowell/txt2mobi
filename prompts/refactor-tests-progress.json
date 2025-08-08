@@ -2,12 +2,12 @@
   "version": 1,
   "status": "running",
   "startedAt": "2025-08-08T08:59:40.422Z",
-  "updatedAt": "2025-08-08T09:12:54.929Z",
+  "updatedAt": "2025-08-08T09:24:02.353Z",
   "totals": {
-    "queued": 12,
-    "processed": 8,
-    "edited": 6,
-    "removed": 2,
+    "queued": 4,
+    "processed": 16,
+    "edited": 14,
+    "removed": 8,
     "skipped": 0,
     "failures": 0
   },
@@ -77,67 +77,67 @@
       "commits": ["b2096f1"]
     },
     "test/file.novel.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
-      "commits": []
+      "status": "edited",
+      "reason": "simplified mock setup and merged tests",
+      "kept": 3,
+      "removed": 2,
+      "notes": "合并重复测试用例，简化beforeEach设置，保留核心功能覆盖",
+      "commits": ["a3d73d7"]
     },
     "test/file.orphaned.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "optimized mock setup and test structure",
+      "kept": 3,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "简化全局mock设置，优化测试结构，保持功能覆盖",
+      "commits": ["a3d73d7"]
     },
     "test/file.temp.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
-      "commits": []
+      "status": "edited",
+      "reason": "merged tests and simplified mocks",
+      "kept": 1,
+      "removed": 1,
+      "notes": "合并测试用例，简化mock设置，减少冗余重置",
+      "commits": ["a3d73d7"]
     },
     "test/kindle.env.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
-      "commits": []
+      "status": "edited",
+      "reason": "removed complex global mocks and merged tests",
+      "kept": 1,
+      "removed": 2,
+      "notes": "移除复杂的全局mock声明，合并测试用例，大幅简化设置",
+      "commits": ["a3d73d7"]
     },
     "test/kindle.mobi.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
+      "status": "edited",
+      "reason": "merged redundant tests and fixed types",
+      "kept": 3,
+      "removed": 1,
+      "notes": "合并了两个测试true的用例，添加类型声明修复TypeScript错误",
       "commits": []
     },
     "test/kindle.move.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "fixed types only",
+      "kept": 1,
       "removed": 0,
-      "notes": "",
+      "notes": "文件已精简，仅添加类型声明修复TypeScript错误",
       "commits": []
     },
     "test/processor.encoding.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
+      "status": "edited",
+      "reason": "merged encoding detection tests",
+      "kept": 3,
+      "removed": 1,
+      "notes": "合并了两个编码检测测试用例，减少重复代码",
       "commits": []
     },
     "test/processor.export.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
+      "status": "edited",
+      "reason": "simplified export checks",
+      "kept": 1,
+      "removed": 1,
+      "notes": "简化导出函数检查，移除了不必要的函数断言",
       "commits": []
     },
     "test/processor.images.test.ts": {

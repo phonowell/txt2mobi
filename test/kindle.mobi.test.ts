@@ -1,6 +1,15 @@
 // vitest for mobiExists
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+// 类型声明
+declare global {
+  var isExistMock: ReturnType<typeof vi.fn>
+  var globMock: ReturnType<typeof vi.fn>
+  var copyMock: ReturnType<typeof vi.fn>
+  var getBasenameMock: ReturnType<typeof vi.fn>
+  var echoMock: ReturnType<typeof vi.fn>
+}
+
 globalThis.isExistMock = vi.fn()
 globalThis.globMock = vi.fn()
 globalThis.copyMock = vi.fn()
@@ -53,19 +62,7 @@ describe('kindle utils - mobiExists', () => {
     expect(result).toBe(false)
   })
 
-  it('returns true if mobiCache is empty and glob returns matching file', async () => {
-    globalThis.globMock.mockResolvedValue(['/mock/documents/book1.mobi'])
-    globalThis.getBasenameMock.mockImplementation((p: string) =>
-      p.split('/').pop(),
-    )
-    const result = await kindleUtils.mobiExists(
-      mockConfig,
-      '/mock/documents/book1.mobi',
-    )
-    expect(result).toBe(true)
-  })
-
-  it('returns true if mobiCache already contains the file', async () => {
+  it('returns true if file exists (direct match or in cache)', async () => {
     globalThis.globMock.mockResolvedValue([
       '/mock/documents/book1.mobi',
       '/mock/documents/book2.mobi',
@@ -73,12 +70,19 @@ describe('kindle utils - mobiExists', () => {
     globalThis.getBasenameMock.mockImplementation((p: string) =>
       p.split('/').pop(),
     )
-    await kindleUtils.mobiExists(mockConfig, '/mock/documents/book1.mobi')
-    const result = await kindleUtils.mobiExists(
+    // 测试直接匹配
+    const result1 = await kindleUtils.mobiExists(
+      mockConfig,
+      '/mock/documents/book1.mobi',
+    )
+    expect(result1).toBe(true)
+
+    // 测试缓存机制
+    const result2 = await kindleUtils.mobiExists(
       mockConfig,
       '/mock/documents/book2.mobi',
     )
-    expect(result).toBe(true)
+    expect(result2).toBe(true)
     expect(globalThis.globMock).toHaveBeenCalledTimes(1)
   })
 
