@@ -4,8 +4,8 @@
   "startedAt": "2025-08-08T08:59:40.422Z",
   "updatedAt": "2025-08-08T09:24:02.353Z",
   "totals": {
-    "queued": 4,
-    "processed": 16,
+    "queued": 0,
+    "processed": 20,
     "edited": 14,
     "removed": 8,
     "skipped": 0,
@@ -141,35 +141,35 @@
       "commits": []
     },
     "test/processor.images.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 2,
       "removed": 0,
-      "notes": "",
+      "notes": "文件已精简，仅包含2个核心测试用例：有图片时写入HTML，无图片时不写入。覆盖了processImages函数的主要逻辑分支",
       "commits": []
     },
     "test/processor.mobi.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 1,
       "removed": 0,
-      "notes": "",
+      "notes": "文件已精简，仅包含1个测试用例验证convertToMobi调用exec。测试简单但覆盖了核心路径",
       "commits": []
     },
     "test/processor.split.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 2,
       "removed": 0,
-      "notes": "",
+      "notes": "文件已精简，包含2个测试用例：正常分块流程和无内容异常。覆盖了splitText函数的成功和失败情况",
       "commits": []
     },
     "test/processor.text.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 2,
       "removed": 0,
-      "notes": "",
+      "notes": "文件已精简，包含2个测试用例：内容存在时写入HTML，内容为空时不写入。覆盖了processText函数的主要逻辑分支",
       "commits": []
     }
   }
