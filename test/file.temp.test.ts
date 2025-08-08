@@ -4,15 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 let remove: ReturnType<typeof vi.fn>
 
 beforeEach(() => {
-  remove = vi.fn()
-  vi.doMock('fire-keeper', () => ({
-    remove,
-    os: () => 'macos',
-  }))
+  remove = vi.fn().mockResolvedValue(undefined)
+  vi.doMock('fire-keeper', () => ({ remove, os: () => 'macos' }))
   vi.resetModules()
   vi.clearAllMocks()
-  remove.mockReset()
-  remove.mockResolvedValue(undefined)
 })
 
 const mockConfig = {
@@ -27,15 +22,15 @@ const mockConfig = {
 }
 
 describe('file utils - cleanTempDir', () => {
-  it('should call remove with temp path', async () => {
+  it('should remove temp directory and handle errors', async () => {
     const fileUtils = await import('../src/utils/basic.js')
+    
+    // Test normal removal
     await fileUtils.cleanTempDir(mockConfig)
     expect(remove).toHaveBeenCalledWith(mockConfig.temp)
-  })
 
-  it('should handle remove throwing error', async () => {
+    // Test error handling
     remove.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/basic.js')
     await expect(fileUtils.cleanTempDir(mockConfig)).rejects.toThrow()
   })
 })

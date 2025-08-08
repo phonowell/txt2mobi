@@ -2,12 +2,12 @@
   "version": 1,
   "status": "running",
   "startedAt": "2025-08-08T08:59:40.422Z",
-  "updatedAt": "2025-08-08T09:05:45.000Z",
+  "updatedAt": "2025-08-08T09:12:54.929Z",
   "totals": {
-    "queued": 16,
-    "processed": 4,
-    "edited": 2,
-    "removed": 1,
+    "queued": 12,
+    "processed": 8,
+    "edited": 6,
+    "removed": 2,
     "skipped": 0,
     "failures": 0
   },
@@ -45,36 +45,36 @@
       "commits": ["dada910"]
     },
     "test/converter.misc.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "fixed type issues and simplified mocks",
+      "kept": 2,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "删除类型断言，简化mock设置，提供类型安全的配置对象",
+      "commits": ["b2096f1"]
     },
     "test/converter.novel.error.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "fixed type issues and optimized mocks",
+      "kept": 1,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "删除类型断言，优化mock结构，修复spy引用问题",
+      "commits": ["b2096f1"]
     },
     "test/converter.novel.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
-      "commits": []
+      "status": "edited",
+      "reason": "removed invalid test with @ts-expect-error",
+      "kept": 1,
+      "removed": 1,
+      "notes": "删除了使用@ts-expect-error的无效测试用例，替换为类型安全的测试",
+      "commits": ["b2096f1"]
     },
     "test/file.manga.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "optimized mock setup",
+      "kept": 5,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "简化mock设置，减少重复的beforeEach逻辑，保留所有测试用例",
+      "commits": ["b2096f1"]
     },
     "test/file.novel.test.ts": {
       "status": "queued",

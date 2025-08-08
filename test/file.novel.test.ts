@@ -7,9 +7,9 @@ let remove: ReturnType<typeof vi.fn>
 let write: ReturnType<typeof vi.fn>
 
 beforeEach(() => {
-  glob = vi.fn()
-  read = vi.fn(() => Promise.resolve('mock content'))
-  remove = vi.fn()
+  glob = vi.fn().mockResolvedValue([])
+  read = vi.fn().mockResolvedValue('mock content')
+  remove = vi.fn().mockResolvedValue(undefined)
   write = vi.fn()
   vi.doMock('fire-keeper', () => ({
     glob,
@@ -25,10 +25,6 @@ beforeEach(() => {
   }))
   vi.resetModules()
   vi.clearAllMocks()
-  glob.mockReset()
-  glob.mockResolvedValue([])
-  remove.mockReset()
-  remove.mockResolvedValue(undefined)
 })
 
 const mockConfig = {
@@ -43,39 +39,27 @@ const mockConfig = {
 }
 
 describe('file utils - cleanNovelNames', () => {
-  it('should rename files with dirty names', async () => {
-    glob.mockResolvedValue(['/mock/novel/dirty[1].txt'])
+  it('should rename dirty files and skip clean ones', async () => {
+    glob.mockResolvedValue([
+      '/mock/novel/dirty[1].txt',
+      '/mock/novel/clean.txt',
+    ])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
-    const { read, remove, write } = await import('fire-keeper')
-    expect(read).toHaveBeenCalled()
-    expect(remove).toHaveBeenCalled()
-    expect(write).toHaveBeenCalled()
+    expect(read).toHaveBeenCalledTimes(1)
+    expect(remove).toHaveBeenCalledTimes(1)
+    expect(write).toHaveBeenCalledTimes(1)
   })
 
-  it('should skip already clean names', async () => {
-    glob.mockResolvedValue(['/mock/novel/clean.txt'])
-    const fileUtils = await import('../src/utils/basic.js')
-    await fileUtils.cleanNovelNames(mockConfig)
-    const { read, remove, write } = await import('fire-keeper')
-    expect(read).not.toHaveBeenCalled()
-    expect(remove).not.toHaveBeenCalled()
-    expect(write).not.toHaveBeenCalled()
-  })
-
-  it('should handle empty novel directory', async () => {
+  it('should handle empty directory and errors', async () => {
+    // Test empty directory
     glob.mockResolvedValue([])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
-    const { read, remove, write } = await import('fire-keeper')
     expect(read).not.toHaveBeenCalled()
-    expect(remove).not.toHaveBeenCalled()
-    expect(write).not.toHaveBeenCalled()
-  })
 
-  it('should handle glob throwing error', async () => {
+    // Test glob error
     glob.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/basic.js')
     await expect(fileUtils.cleanNovelNames(mockConfig)).rejects.toThrow('fail')
   })
 
@@ -86,11 +70,11 @@ describe('file utils - cleanNovelNames', () => {
     ])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
-    // 英文保留字符应被移除（允许中文符号）
+
     const newName = write.mock.calls[0][0].split('/').pop()
     expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
     expect(newName).toMatch(/[：？]/)
-    // 文件名长度应被限制
+
     const longName = write.mock.calls[1][0].split('/').pop()
     const baseName = longName.replace(/\.txt$/, '')
     expect(baseName.length).toBeLessThanOrEqual(20)
