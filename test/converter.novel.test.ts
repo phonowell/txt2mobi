@@ -1,24 +1,15 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-const cleanNovelNames = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
-  Promise.resolve(['/mock/novel/1.txt']),
-)
-const fixEncoding = vi.fn<(...args: unknown[]) => Promise<void>>()
-const cleanTempDir = vi.fn<(...args: unknown[]) => Promise<void>>()
-const glob = vi.fn<(...args: unknown[]) => Promise<string[]>>()
-const mobiExists = vi.fn<(...args: unknown[]) => Promise<boolean>>()
-const splitText = vi.fn<(...args: unknown[]) => Promise<string[]>>()
-const processText = vi.fn<(...args: unknown[]) => Promise<void>>()
-const convertToMobi = vi.fn<(...args: unknown[]) => Promise<void>>()
-const moveToKindle = vi.fn<(...args: unknown[]) => Promise<void>>()
+import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('../utils/file.js', () => ({
-  cleanNovelNames,
-  cleanTempDir,
+  cleanNovelNames: vi.fn(() => Promise.resolve([])),
+  cleanTempDir: vi.fn(() => Promise.resolve()),
 }))
-vi.mock('../utils/kindle.js', () => ({ mobiExists, moveToKindle }))
+vi.mock('../utils/kindle.js', () => ({
+  mobiExists: vi.fn(() => Promise.resolve(false)),
+  moveToKindle: vi.fn(() => Promise.resolve()),
+}))
 vi.mock('fire-keeper', () => ({
-  glob,
+  glob: vi.fn(() => Promise.resolve([])),
   os: () => 'macos',
   getBasename: (p: string) => p.split('/').pop() ?? '',
   remove: vi.fn(() => Promise.resolve()),
@@ -29,40 +20,27 @@ vi.mock('fire-keeper', () => ({
   isExist: vi.fn(() => Promise.resolve(true)),
   echo: vi.fn(() => void 0),
 }))
-vi.mock('./processor.js', () => ({
-  fixEncoding,
-  splitText,
-  processText,
-  convertToMobi,
+vi.mock('../src/core/processor.js', () => ({
+  fixEncoding: vi.fn(() => Promise.resolve()),
+  splitText: vi.fn(() => Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt'])),
+  processText: vi.fn(() => Promise.resolve()),
+  convertToMobi: vi.fn(() => Promise.resolve()),
 }))
 
 describe('convertNovel', () => {
-  beforeEach(() => {
-    cleanNovelNames.mockClear()
-    fixEncoding.mockClear()
-    cleanTempDir.mockClear()
-    glob.mockClear()
-    mobiExists.mockClear()
-    splitText.mockClear()
-    processText.mockClear()
-    convertToMobi.mockClear()
-    moveToKindle.mockClear()
-    cleanNovelNames.mockResolvedValue(['/mock/novel/1.txt'])
-    glob.mockResolvedValue(['/mock/novel/1.txt'])
-    mobiExists.mockResolvedValue(false)
-    splitText.mockResolvedValue(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt'])
-    processText.mockResolvedValue()
-    convertToMobi.mockResolvedValue()
-    moveToKindle.mockResolvedValue()
-    cleanTempDir.mockResolvedValue()
-  })
-
-  it('should handle empty input', async () => {
-    cleanNovelNames.mockResolvedValueOnce([])
-    glob.mockResolvedValueOnce([])
+  it('should handle empty novel storage gracefully', async () => {
     const { convertNovel } = await import('../src/core/converter.js')
-    // @ts-expect-error mock
-    const result = await convertNovel([])
+    const config = {
+      mangaStorage: '/mock/manga',
+      novelStorage: '/mock/novel',
+      documents: '/mock/documents',
+      temp: '/mock/temp',
+      kindlegen: '/mock/kindlegen',
+      mangaMaxWidth: 1280,
+      mangaQuality: 80,
+      novelFileSize: 200000,
+    }
+    const result = await convertNovel(config)
     expect(result).toBeUndefined()
   })
 })

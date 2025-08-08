@@ -1,27 +1,21 @@
-// vitest for cleanMangaNames
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Mock } from 'vitest'
+const glob = vi.fn()
+const exec = vi.fn()
 
-let glob: Mock
-let exec: Mock
+vi.mock('fire-keeper', () => ({
+  glob,
+  getBasename: (p: string) =>
+    p
+      .split('/')
+      .pop()
+      ?.replace(/\.[^.]+$/, '') ?? '',
+  exec,
+  os: () => 'macos',
+}))
 
 beforeEach(() => {
-  glob = vi.fn()
-  exec = vi.fn()
-  vi.doMock('fire-keeper', () => ({
-    glob,
-    getBasename: (p: string) =>
-      p
-        .split('/')
-        .pop()
-        ?.replace(/\.[^.]+$/, '') ?? '',
-    exec,
-    os: () => 'macos',
-  }))
-  vi.resetModules()
   vi.clearAllMocks()
-  glob.mockReset()
   glob.mockResolvedValue([])
 })
 

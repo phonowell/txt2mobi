@@ -2,47 +2,47 @@
   "version": 1,
   "status": "running",
   "startedAt": "2025-08-08T08:59:40.422Z",
-  "updatedAt": "2025-08-08T09:00:41.337Z",
+  "updatedAt": "2025-08-08T09:05:45.000Z",
   "totals": {
-    "queued": 20,
-    "processed": 0,
-    "edited": 0,
-    "removed": 0,
+    "queued": 16,
+    "processed": 4,
+    "edited": 2,
+    "removed": 1,
     "skipped": 0,
     "failures": 0
   },
   "files": {
     "test/config.basic.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 2,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "文件已精简，包含必要的基础功能测试和配置加载测试",
+      "commits": ["dada910"]
     },
     "test/config.platform.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "processed",
+      "reason": "already slim",
+      "kept": 3,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "文件已精简，覆盖了平台选择和异常处理的关键路径",
+      "commits": ["dada910"]
     },
     "test/converter.manga.error.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
+      "status": "edited",
+      "reason": "fixed type issue",
+      "kept": 1,
       "removed": 0,
-      "notes": "",
-      "commits": []
+      "notes": "修复了类型断言问题，提供了符合Config类型的完整配置对象",
+      "commits": ["dada910"]
     },
     "test/converter.manga.test.ts": {
-      "status": "queued",
-      "reason": "",
-      "kept": 0,
-      "removed": 0,
-      "notes": "",
-      "commits": []
+      "status": "edited",
+      "reason": "replaced invalid test",
+      "kept": 1,
+      "removed": 1,
+      "notes": "删除了使用@ts-expect-error的无效测试用例，替换为正确的类型安全测试，修复了mock路径",
+      "commits": ["dada910"]
     },
     "test/converter.misc.test.ts": {
       "status": "queued",
