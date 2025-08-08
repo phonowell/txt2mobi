@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "status": "running",
+  "startedAt": "2025-08-08T08:59:40.422Z",
+  "updatedAt": "2025-08-08T09:00:41.337Z",
+  "totals": {
+    "queued": 20,
+    "processed": 0,
+    "edited": 0,
+    "removed": 0,
+    "skipped": 0,
+    "failures": 0
+  },
+  "files": {
+    "test/config.basic.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/config.platform.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/converter.manga.error.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/converter.manga.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/converter.misc.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/converter.novel.error.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/converter.novel.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/file.manga.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/file.novel.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/file.orphaned.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/file.temp.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/kindle.env.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/kindle.mobi.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/kindle.move.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.encoding.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.export.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.images.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.mobi.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.split.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    },
+    "test/processor.text.test.ts": {
+      "status": "queued",
+      "reason": "",
+      "kept": 0,
+      "removed": 0,
+      "notes": "",
+      "commits": []
+    }
+  }
+}

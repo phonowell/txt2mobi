@@ -55,9 +55,15 @@ describe('convertManga 异常与边界', () => {
     mobiExists.mockResolvedValue(true)
     const { convertManga } = await import('../src/core/converter.js')
     const config = {
+      documents: '/mock/documents',
+      kindlegen: '/mock/kindlegen',
+      mangaMaxWidth: 1280,
+      mangaQuality: 80,
       mangaStorage: '/mock/manga',
-      other: 'x',
-    } as unknown as Parameters<typeof convertManga>[0]
+      novelFileSize: 200000,
+      novelStorage: '/mock/novel',
+      temp: './temp/kindle',
+    }
     await convertManga(config)
     expect(processImages).not.toHaveBeenCalled()
     expect(convertToMobi).not.toHaveBeenCalled()
