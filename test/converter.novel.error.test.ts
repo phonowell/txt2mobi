@@ -6,7 +6,9 @@ vi.mock('../utils/file.js', () => ({
 }))
 const mobiExists = vi.fn(() => Promise.resolve(true))
 const moveToKindle = vi.fn(() => Promise.resolve())
-const splitText = vi.fn(() => Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt']))
+const splitText = vi.fn(() =>
+  Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt']),
+)
 const processText = vi.fn(() => Promise.resolve())
 const convertToMobi = vi.fn(() => Promise.resolve())
 
@@ -36,7 +38,7 @@ vi.mock('../src/core/processor.js', () => ({
 describe('convertNovel 异常与边界', () => {
   it('should skip files if mobiExists returns true', async () => {
     const { convertNovel } = await import('../src/core/converter.js')
-    
+
     const config = {
       mangaStorage: '/mock/manga',
       novelStorage: '/mock/novel',
@@ -47,7 +49,7 @@ describe('convertNovel 异常与边界', () => {
       mangaQuality: 80,
       novelFileSize: 200000,
     }
-    
+
     await convertNovel(config)
     expect(splitText).not.toHaveBeenCalled()
     expect(processText).not.toHaveBeenCalled()

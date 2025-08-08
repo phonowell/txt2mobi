@@ -25,6 +25,7 @@ vi.mock('fire-keeper', () => ({
 }))
 
 import type { Config } from '../src/core/config'
+import type * as KindleUtils from '../src/utils/kindle.js'
 
 const mockConfig: Config = {
   kindlegen: '/mock/kindlegen',
@@ -38,7 +39,7 @@ const mockConfig: Config = {
 }
 
 describe('kindle utils - mobiExists', () => {
-  let kindleUtils: typeof import('../src/utils/kindle.js')
+  let kindleUtils: typeof KindleUtils
 
   beforeEach(async () => {
     vi.resetModules()

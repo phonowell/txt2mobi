@@ -24,7 +24,7 @@ const mockConfig = {
 describe('file utils - cleanTempDir', () => {
   it('should remove temp directory and handle errors', async () => {
     const fileUtils = await import('../src/utils/basic.js')
-    
+
     // Test normal removal
     await fileUtils.cleanTempDir(mockConfig)
     expect(remove).toHaveBeenCalledWith(mockConfig.temp)

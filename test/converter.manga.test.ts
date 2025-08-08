@@ -64,7 +64,9 @@ describe('convertManga', () => {
     }
     await convertManga(config)
     expect(cleanMangaNames).toHaveBeenCalledWith(config)
-    expect(glob).toHaveBeenCalledWith('/mock/manga/*', { onlyDirectories: true })
+    expect(glob).toHaveBeenCalledWith('/mock/manga/*', {
+      onlyDirectories: true,
+    })
     expect(processImages).toHaveBeenCalledTimes(2)
     expect(convertToMobi).toHaveBeenCalledTimes(2)
     expect(moveToKindle).toHaveBeenCalledTimes(2)

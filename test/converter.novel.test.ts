@@ -22,7 +22,9 @@ vi.mock('fire-keeper', () => ({
 }))
 vi.mock('../src/core/processor.js', () => ({
   fixEncoding: vi.fn(() => Promise.resolve()),
-  splitText: vi.fn(() => Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt'])),
+  splitText: vi.fn(() =>
+    Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt']),
+  ),
   processText: vi.fn(() => Promise.resolve()),
   convertToMobi: vi.fn(() => Promise.resolve()),
 }))

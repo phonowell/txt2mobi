@@ -21,7 +21,7 @@ export const mockGlob = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
 /** mock: fire-keeper.exec */
 export const mockExec = vi.fn(() => Promise.resolve())
 /** mock: fire-keeper.getBasename */
-export const mockGetBasename = vi.fn((p: string) => p.split('/').pop() || '')
+export const mockGetBasename = vi.fn((p: string) => p.split('/').pop() ?? '')
 /** mock: fire-keeper.os */
 export const mockOs = vi.fn(() => 'macos')
 /** mock: jimp.Jimp.read */
