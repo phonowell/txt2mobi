@@ -5,19 +5,7 @@ type PackageJson = {
   devDependencies?: Record<string, string>
 }
 
-const DEPS_TO_INSTALL: string[] = ['clsx']
-
-const DEV_DEPS_TO_INSTALL: string[] = [
-  'eslint-plugin-unused-imports',
-  'radash',
-  'ts-morph',
-  'unplugin-auto-import',
-  'web-vitals',
-]
-
-const DEPS_TO_REMOVE: string[] = ['classnames', 'moment']
-
-const getDeps = async () => {
+const getAllDependencies = async () => {
   const pkg = await read<PackageJson>('./package.json')
   if (!pkg) return []
 
@@ -29,39 +17,8 @@ const getDeps = async () => {
   return deps
 }
 
-const manageDeps = async () => {
-  const deps = await getDeps()
-
-  const depsToInstall = DEPS_TO_INSTALL.filter(
-    (name) => !deps.some(([depName]) => depName === name),
-  )
-
-  if (depsToInstall.length) {
-    const list = depsToInstall.join(' ')
-    await exec(`pnpm add ${list}`)
-  }
-
-  const devDepsToInstall = DEV_DEPS_TO_INSTALL.filter(
-    (name) => !deps.some(([depName]) => depName === name),
-  )
-
-  if (devDepsToInstall.length) {
-    const list = devDepsToInstall.join(' ')
-    await exec(`pnpm add -D ${list}`)
-  }
-
-  const depsToRemove = DEPS_TO_REMOVE.filter((name) =>
-    deps.some(([depName]) => depName === name),
-  )
-
-  if (depsToRemove.length) {
-    const list = depsToRemove.join(' ')
-    await exec(`pnpm remove ${list}`)
-  }
-}
-
-const updateDeps = async () => {
-  const deps = await getDeps()
+const updateDependencies = async () => {
+  const deps = await getAllDependencies()
 
   const lockedDeps = deps.filter(
     ([, version]) => !Number.isNaN(Number(version[0])),
@@ -79,7 +36,7 @@ const updateDeps = async () => {
 
   if (depsToUpdate.length) {
     const list = depsToUpdate.map((name) => `${name}@latest`).join(' ')
-    await exec(`pnpm up ${list}`)
+    await exec(`pnpm install ${list}`)
   }
 
   echo(
@@ -91,8 +48,7 @@ const updateDeps = async () => {
 }
 
 const main = async () => {
-  await manageDeps()
-  await updateDeps()
+  await updateDependencies()
 }
 
 export default main

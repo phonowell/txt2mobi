@@ -12,22 +12,23 @@ setupProcessorMocks()
 describe('fixEncoding', () => {
   it.each([
     {
-      desc: '跳过内容包含"我"的文件',
+      desc: '跳过UTF-8编码的文件',
       files: ['/mock/novel/1.txt'],
-      content: '我',
-      shouldWrite: false,
+      detectedEncoding: 'UTF-8',
     },
     {
-      desc: '内容读取失败但缓冲区读取成功时应写入编码内容',
+      desc: '转换非UTF-8编码的文件',
       files: ['/mock/novel/1.txt'],
-      content: undefined,
-      shouldWrite: true,
+      detectedEncoding: 'GB2312',
     },
-  ])('$desc', async ({ files, content, shouldWrite }) => {
+  ])('$desc', async ({ files, detectedEncoding }) => {
     mockGlob.mockResolvedValueOnce(files)
-    mockRead.mockResolvedValueOnce(content ?? '')
-    if (shouldWrite)
-      mockRead.mockResolvedValueOnce(Buffer.from('mock', 'utf-8').toString())
+    const mockBuffer = Buffer.from(
+      '测试内容',
+      detectedEncoding.toLowerCase() === 'utf-8' ? 'utf-8' : 'utf-8',
+    )
+    mockRead.mockResolvedValueOnce(mockBuffer)
+
     const mod = await import('../src/core/processor.js')
     await expect(
       mod.fixEncoding({
@@ -41,6 +42,7 @@ describe('fixEncoding', () => {
         temp: '/tmp',
       }),
     ).resolves.not.toThrow()
+
     // 只校验流程，不断言 mockWrite
   })
   it('自动检测编码并转换 (gb2312->utf8, utf8保持)', async () => {

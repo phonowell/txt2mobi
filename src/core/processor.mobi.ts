@@ -1,17 +1,13 @@
 // mobi转换与文本分割相关
-import { exec, getBasename, os, read } from 'fire-keeper'
+import { exec, getBasename, read } from 'fire-keeper'
 
 import { createChunks, writeChunkFiles } from '../utils/chunk.js'
 
 import type { Config } from './config.js'
 
-const IS_WINDOWS = os() === 'windows'
-
 export const convertToMobi = async (config: Config, filePath: string) => {
   const basename = getBasename(filePath)
-  const htmlPath = IS_WINDOWS
-    ? `${config.temp}/${basename}.html`
-    : `"${config.temp}/${basename}.html"`
+  const htmlPath = `"${config.temp}/${basename}.html"`
 
   const command = [
     config.kindlegen,

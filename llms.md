@@ -1,5 +1,8 @@
 llms.md
 
+**最后更新：2025年09月17日**
+**状态：✅ 所有测试通过 (39/39)，ESLint 检查通过，依赖信息已同步**
+
 ## 0. 项目目的
 
 - 自动将本地 txt/漫画文件批量转换为 mobi 格式，并同步至 Kindle 设备，支持多平台配置、自动化处理、批量重命名、环境校验、产物清理等流程，提升电子书/漫画管理与推送效率。
@@ -8,6 +11,9 @@ llms.md
 
 - 源码每次变更后，**必须执行全部测试用例，确保所有新旧逻辑均被充分覆盖，测试全部通过后方可提交**
 - 所有新增或修改的代码**必须严格遵循 eslint.config.mjs 中的规范，提交前必须通过所有 ESLint 检查，禁止有任何风格错误或警告**
+- **总是最小化实现代码，避免冗余逻辑和过度设计**
+- **总是使用 eslint cli 来修复代码格式，确保一致性**
+- **总是尽可能为用户省去无谓输出，节省 tokens 和时间**
 - 仅保留结构化、机器可解析关键信息，按重要性排序，优先入口、导出、依赖、构建、产物、自动化、测试等
 - 自动提取、同步更新，保持准确性和时效性
 - 新增、删除、变更需同步更新相关条目，保持格式一致
@@ -29,7 +35,7 @@ llms.md
 
 ## 5. 依赖
 
-- 仅保留关键依赖：fire-keeper, axios, iconv-lite, jimp, radash, vitest
+- 仅保留关键依赖：fire-keeper, chardet, iconv-lite, jimp, vitest
 
 ## 6. 目录结构
 
@@ -44,6 +50,8 @@ llms.md
 
 - 仅保留主入口脚本：start: tsx src/index.ts
 - 任务入口：task: tsx task/index.ts
+- 代码检查：lint: eslint "src/**/\*.{ts,tsx}" "{task,test}/**/\*.ts" --fix
+- 测试运行：test: vitest run
 
 ## 8. 配置文件
 
@@ -92,8 +100,10 @@ llms.md
 
 ## 15. 典型调用
 
-- 运行: pnpm start
-- 任务: pnpm task <name>
+- 运行转换：pnpm start
+- 任务管理：pnpm task <name>
+- 代码检查：pnpm run lint
+- 测试运行：pnpm test
 
 ## 16. 单测运行
 

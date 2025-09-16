@@ -9,9 +9,6 @@ export const fixEncoding = async (config: Config) => {
   const textFiles = await glob(`${config.novelStorage}/*.txt`)
 
   for (const filePath of textFiles) {
-    const content = await read<string>(filePath)
-    if (!content || content.includes('我')) continue
-
     const rawBuffer = await read(filePath, { raw: true })
     if (!rawBuffer || !(rawBuffer instanceof Buffer)) continue
 
@@ -20,13 +17,21 @@ export const fixEncoding = async (config: Config) => {
     // 兼容部分 chardet 返回值
     const encoding = detectedEncoding.toLowerCase().replace(/[^a-z0-9\-]/g, '')
 
+    // 如果检测到的编码已经是 UTF-8，跳过转换
+    if (encoding === 'utf8' || encoding === 'utf-8') continue
+
     // 解码为 utf-8
     let utf8Buffer: Buffer
     try {
       utf8Buffer = iconv.encode(iconv.decode(rawBuffer, encoding), 'utf-8')
     } catch {
       // 检测失败时回退 gb2312
-      utf8Buffer = iconv.encode(iconv.decode(rawBuffer, 'gb2312'), 'utf-8')
+      try {
+        utf8Buffer = iconv.encode(iconv.decode(rawBuffer, 'gb2312'), 'utf-8')
+      } catch {
+        // 如果仍然失败，跳过此文件
+        continue
+      }
     }
     await write(filePath, utf8Buffer)
   }
