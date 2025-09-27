@@ -2,7 +2,26 @@ import { copy, echo, getBasename, glob, isExist } from 'fire-keeper'
 
 import type { Config } from '../core/config.js'
 
-let mobiCache = ''
+type MobiCache = {
+  originals: Set<string>
+  normalized: Set<string>
+}
+
+let mobiCache: MobiCache | null = null
+
+const SERIAL_SUFFIX = /-\d+$/
+
+const normalizeSerial = (name: string) => name.replace(SERIAL_SUFFIX, '')
+
+const loadMobiCache = async (config: Config): Promise<MobiCache> => {
+  const basenames = (await glob(`${config.documents}/*.mobi`)).map((path) =>
+    getBasename(path),
+  )
+  return {
+    originals: new Set(basenames),
+    normalized: new Set(basenames.map(normalizeSerial)),
+  }
+}
 
 export const validateEnv = async (config: Config) => {
   if (!(await isExist(config.kindlegen))) {
@@ -21,15 +40,21 @@ export const validateEnv = async (config: Config) => {
 }
 
 export const mobiExists = async (config: Config, filePath: string) => {
-  if (!mobiCache) {
-    const mobiFiles = await glob(`${config.documents}/*.mobi`)
-    mobiCache = mobiFiles.map((path) => getBasename(path)).join(', ')
-  }
+  mobiCache ??= await loadMobiCache(config)
 
-  return mobiCache.includes(getBasename(filePath))
+  const baseName = getBasename(filePath)
+  const normalized = normalizeSerial(baseName)
+
+  return (
+    mobiCache.originals.has(baseName) || mobiCache.normalized.has(normalized)
+  )
 }
 
 export const moveToKindle = async (config: Config, filePath: string) => {
   const basename = getBasename(filePath)
   await copy(`${config.temp}/${basename}.mobi`, config.documents)
+  if (mobiCache) {
+    mobiCache.originals.add(basename)
+    mobiCache.normalized.add(normalizeSerial(basename))
+  }
 }

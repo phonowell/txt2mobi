@@ -2,69 +2,42 @@ import { write } from 'fire-keeper'
 
 import type { Config } from '../core/config.js'
 
-// 数组分割
+const NEW_LINE_SIZE = 1
+
 export const createChunks = (lines: string[], maxSize: number): string[][] => {
-  if (lines.length === 0) return []
-  return lines
-    .reduce<{
-      chunks: string[][]
-      currentChunk: string[]
-      currentCharCount: number
-    }>(
-      (acc, line) => {
-        const lineCharCount = line.length + 1
-        if (
-          acc.currentCharCount + lineCharCount > maxSize &&
-          acc.currentChunk.length > 0
-        ) {
-          return {
-            chunks: [...acc.chunks, acc.currentChunk],
-            currentChunk: [line],
-            currentCharCount: lineCharCount,
-          }
-        }
-        return {
-          chunks: acc.chunks,
-          currentChunk: [...acc.currentChunk, line],
-          currentCharCount: acc.currentCharCount + lineCharCount,
-        }
-      },
-      { chunks: [], currentChunk: [], currentCharCount: 0 },
-    )
-    .chunks.concat(
-      [
-        lines.reduce<{ currentChunk: string[]; currentCharCount: number }>(
-          (acc, line) => {
-            const lineCharCount = line.length + 1
-            if (
-              acc.currentCharCount + lineCharCount > maxSize &&
-              acc.currentChunk.length > 0
-            )
-              return { currentChunk: [line], currentCharCount: lineCharCount }
-            return {
-              currentChunk: [...acc.currentChunk, line],
-              currentCharCount: acc.currentCharCount + lineCharCount,
-            }
-          },
-          { currentChunk: [], currentCharCount: 0 },
-        ).currentChunk,
-      ].filter((chunk) => chunk.length > 0),
-    )
+  if (!lines.length) return []
+
+  const chunks: string[][] = []
+  let current: string[] = []
+  let charCount = 0
+
+  for (const line of lines) {
+    const lineSize = line.length + NEW_LINE_SIZE
+    if (current.length && charCount + lineSize > maxSize) {
+      chunks.push(current)
+      current = []
+      charCount = 0
+    }
+    current.push(line)
+    charCount += lineSize
+  }
+
+  if (current.length) chunks.push(current)
+  return chunks
 }
 
-// 批量写文件
+const buildTargetPath = (basename: string, index: number, config: Config) =>
+  `${config.temp}/${basename}-${(index + 1).toString().padStart(2, '0')}.txt`
+
 export const writeChunkFiles = (
   chunks: string[][],
   basename: string,
   config: Config,
-): Promise<string[]> => {
-  const writeChunk = async (
-    chunk: string[],
-    index: number,
-  ): Promise<string> => {
-    const target = `${config.temp}/${basename}-${(index + 1).toString().padStart(2, '0')}.txt`
-    await write(target, chunk.join('\n'))
-    return target
-  }
-  return Promise.all(chunks.map(writeChunk))
-}
+): Promise<string[]> =>
+  Promise.all(
+    chunks.map(async (chunk, index) => {
+      const target = buildTargetPath(basename, index, config)
+      await write(target, chunk.join('\n'))
+      return target
+    }),
+  )
