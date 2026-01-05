@@ -25,10 +25,10 @@ const executeTask = async (taskName: string) => {
   })
 
   const [firstMatched] = await glob([
-    `./task/${formatted}.js`,
-    `./task/${formatted}.ts`,
-    `./task/${formatted}/index.js`,
-    `./task/${formatted}/index.ts`,
+    `./tasks/${formatted}.js`,
+    `./tasks/${formatted}.ts`,
+    `./tasks/${formatted}/index.js`,
+    `./tasks/${formatted}/index.ts`,
   ])
 
   if (!firstMatched) {
@@ -53,11 +53,11 @@ const executeTask = async (taskName: string) => {
  * @returns 任务名称数组
  */
 const loadTasks = async (): Promise<string[]> => {
-  const sources = await glob(['./task/**/*.js', './task/**/*.ts', '!*.d.ts'])
+  const sources = await glob(['./tasks/**/*.js', './tasks/**/*.ts', '!*.d.ts'])
 
   return sources
     .map((source) =>
-      [getBasename(source), getDirname(source).replace(`${root()}/task`, '')]
+      [getBasename(source), getDirname(source).replace(`${root()}/tasks`, '')]
         .map((it) => trim(it, ' /'))
         .filter(Boolean)
         .join('@'),
@@ -78,8 +78,8 @@ const promptTask = async (tasks: string[]): Promise<string> => {
     type: 'auto',
   })
   if (!answer) return ''
-  if (!tasks.includes(answer)) return promptTask(tasks)
-  return answer
+  if (tasks.includes(answer)) return answer
+  return promptTask(tasks)
 }
 
 /**

@@ -42,15 +42,15 @@ llms.md
 - src/core/（核心逻辑，已拆分为 processor.images.ts、processor.text.ts、processor.mobi.ts、processor.encoding.ts，主入口 processor.ts 统一导出）
 - src/utils/（通用工具）
 - src/index.ts（主入口）
-- task/（自动化脚本）
+- tasks/（自动化脚本）
 - temp/（中间产物、缓存）
 - 主要配置与元数据文件：config.yaml, eslint.config.mjs, package.json, pnpm-lock.yaml, tsconfig.json, readme.md, license.md
 
 ## 7. 构建与脚本
 
 - 仅保留主入口脚本：start: tsx src/index.ts
-- 任务入口：task: tsx task/index.ts
-- 代码检查：lint: eslint "src/**/\*.{ts,tsx}" "{task,test}/**/\*.ts" --fix
+- 任务入口：task: tsx tasks/index.ts
+- 代码检查：lint: eslint "src/**/\*.{ts,tsx}" "{tasks,test}/**/\*.ts" --fix
 - 测试运行：test: vitest run
 
 ## 8. 配置文件
@@ -59,11 +59,11 @@ llms.md
 
 ## 9. 自动化脚本
 
-- task/index.ts (任务入口)
-- task/fix-extensions.ts
-- task/format.ts
-- task/lf.ts
-- task/update.ts
+- tasks/index.ts (任务入口)
+- tasks/fix-extensions.ts
+- tasks/format.ts
+- tasks/lf.ts
+- tasks/update.ts
 - 任务调用: pnpm task <name>
 
 ## 10. API自动生成

@@ -33,7 +33,6 @@ const selectPath = (input: string | Record<string, string>) =>
 export const loadConfig = async (): Promise<Config> => {
   const file = await read<FileConfig>('config.yaml')
   if (!file) throw new Error('config.yaml not found')
-
   return {
     documents: selectPath(file.basic.documents),
     kindlegen: selectPath(file.basic.kindlegen),

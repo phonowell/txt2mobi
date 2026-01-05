@@ -15,6 +15,7 @@ export const formatHtmlLines = (content: string) =>
     .split('\n')
     .map((line) => {
       const trimmedLine = line.trim()
-      return trimmedLine ? `<p>${trimmedLine}</p>` : ''
+      if (!trimmedLine) return ''
+      return `<p>${trimmedLine}</p>`
     })
-    .filter((line) => line)
+    .filter(Boolean)

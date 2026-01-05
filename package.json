@@ -42,9 +42,9 @@
     "url": "https://github.com/phonowell/txt2mobi.git"
   },
   "scripts": {
-    "lint": "eslint \"src/**/*.{ts,tsx}\" \"{task,test}/**/*.ts\" --fix",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"{tasks,test}/**/*.ts\" --fix",
     "start": "tsx src/index.ts",
-    "task": "tsx task/index.ts",
+    "task": "tsx tasks/index.ts",
     "test": "vitest run"
   },
   "type": "module",

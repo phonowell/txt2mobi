@@ -28,16 +28,13 @@ const updateDependencies = async () => {
   )
 
   const depsToUpdate = unlockedDeps
-    .filter(([name]) => {
-      if (name.endsWith('react') || name.endsWith('react-dom')) return false
-      return true
-    })
+    .filter(([name]) => !name.endsWith('react') && !name.endsWith('react-dom'))
     .map(([name]) => name)
 
-  if (depsToUpdate.length) {
-    const list = depsToUpdate.map((name) => `${name}@latest`).join(' ')
-    await exec(`pnpm install ${list}`)
-  }
+  if (!depsToUpdate.length) return
+
+  const list = depsToUpdate.map((name) => `${name}@latest`).join(' ')
+  await exec(`pnpm install ${list}`)
 
   echo(
     [

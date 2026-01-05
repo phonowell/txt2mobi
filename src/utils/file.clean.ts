@@ -31,9 +31,9 @@ export const cleanName = (name: string) => {
     .trim()
 
   const sanitized = replaced.replace(RESERVED_CHARACTERS, '')
-  return sanitized.length > MAX_NAME_LENGTH
-    ? sanitized.slice(0, MAX_NAME_LENGTH)
-    : sanitized
+  if (sanitized.length > MAX_NAME_LENGTH)
+    return sanitized.slice(0, MAX_NAME_LENGTH)
+  return sanitized
 }
 
 const renameDirectory = async (source: string, nextName: string) => {
@@ -41,7 +41,6 @@ const renameDirectory = async (source: string, nextName: string) => {
     await exec(`ren '${escapeForWindows(source)}' '${nextName}'`)
     return
   }
-
   await exec(`mv "${source}" "${replaceLastSegment(source, nextName)}"`)
 }
 

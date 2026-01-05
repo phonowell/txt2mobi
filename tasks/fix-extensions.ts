@@ -33,7 +33,8 @@ const processSpec = async (
 ): Promise<boolean> => {
   const path = spec.getLiteralValue()
 
-  if (!isRelative(path) || !!getExtname(path)) return false
+  if (!isRelative(path)) return false
+  if (getExtname(path)) return false
 
   const foundExt = await findExt(
     path.startsWith('@')
@@ -41,22 +42,24 @@ const processSpec = async (
       : `${getDirname(filePath)}/${path}`,
   )
 
-  if (foundExt) {
-    const importExt = run(() => {
-      if (foundExt === '.ts' || foundExt === '.tsx')
-        return foundExt === '.ts' ? '.js' : '.jsx'
-
-      return foundExt
-    })
-
-    const newPath = `${path}${importExt}`
-    spec.setLiteralValue(newPath)
-    echo('success', `✅ '${path}' → '${newPath}' in '${filePath}'`)
-    return true
+  if (!foundExt) {
+    echo(
+      'warn',
+      `⚠️ Cannot find file for '${type}': '${path}' in '${filePath}'`,
+    )
+    return false
   }
 
-  echo('warn', `⚠️ Cannot find file for '${type}': '${path}' in '${filePath}'`)
-  return false
+  const importExt = run(() => {
+    if (foundExt === '.ts') return '.js'
+    if (foundExt === '.tsx') return '.jsx'
+    return foundExt
+  })
+
+  const newPath = `${path}${importExt}`
+  spec.setLiteralValue(newPath)
+  echo('success', `✅ '${path}' → '${newPath}' in '${filePath}'`)
+  return true
 }
 
 /** Fix import extensions in file */

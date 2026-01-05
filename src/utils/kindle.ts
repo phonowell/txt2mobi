@@ -53,8 +53,7 @@ export const mobiExists = async (config: Config, filePath: string) => {
 export const moveToKindle = async (config: Config, filePath: string) => {
   const basename = getBasename(filePath)
   await copy(`${config.temp}/${basename}.mobi`, config.documents)
-  if (mobiCache) {
-    mobiCache.originals.add(basename)
-    mobiCache.normalized.add(normalizeSerial(basename))
-  }
+  if (!mobiCache) return
+  mobiCache.originals.add(basename)
+  mobiCache.normalized.add(normalizeSerial(basename))
 }

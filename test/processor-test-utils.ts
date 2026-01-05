@@ -6,24 +6,20 @@ import { afterEach, beforeEach, vi } from 'vitest'
 
 import type { Mock } from 'vitest'
 
-/** mock: fire-keeper.write */
 export const mockWrite = vi.fn()
-/** mock: fire-keeper.read */
 export const mockRead: Mock<
   (path: string, _opts?: { raw?: boolean }) => Promise<string | Buffer>
 > = vi.fn((_path: string, _opts?: { raw?: boolean }) =>
   Promise.resolve('mock content'),
 )
-/** mock: fire-keeper.glob */
 export const mockGlob = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
   Promise.resolve([]),
 )
-/** mock: fire-keeper.exec */
 export const mockExec = vi.fn(() => Promise.resolve())
-/** mock: fire-keeper.getBasename */
 export const mockGetBasename = vi.fn((p: string) => p.split('/').pop() ?? '')
-/** mock: fire-keeper.os */
 export const mockOs = vi.fn(() => 'macos')
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const mockEcho = vi.fn(() => {})
 /** mock: jimp.Jimp.read */
 export const mockJimpRead = vi.fn(() => ({
   width: 100,
@@ -54,6 +50,7 @@ export const setupProcessorMocks = () => {
     exec: mockExec,
     getBasename: mockGetBasename,
     os: mockOs,
+    echo: mockEcho,
   }))
   vi.mock('jimp', () => ({
     Jimp: { read: mockJimpRead },
@@ -81,6 +78,7 @@ export const clearProcessorMocks = () => {
   mockExec.mockClear()
   mockGetBasename.mockClear()
   mockOs.mockClear()
+  mockEcho.mockClear()
   mockJimpRead.mockClear()
   mockIconv.encode.mockClear()
   mockIconv.decode.mockClear()

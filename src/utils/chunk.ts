@@ -21,7 +21,6 @@ export const createChunks = (lines: string[], maxSize: number): string[][] => {
     current.push(line)
     charCount += lineSize
   }
-
   if (current.length) chunks.push(current)
   return chunks
 }
