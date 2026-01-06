@@ -1,10 +1,8 @@
 import { getBasename, glob, remove } from 'fire-keeper'
 
+import { normalizeSerial } from './serial.js'
+
 import type { Config } from '../core/config.js'
-
-const SERIAL_SUFFIX = /-\d+$/
-
-const normalizeSerial = (name: string) => name.replace(SERIAL_SUFFIX, '')
 
 const toBasenameSet = (paths: string[]) =>
   new Set(paths.map((path) => getBasename(path)))

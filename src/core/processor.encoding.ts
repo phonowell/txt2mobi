@@ -30,8 +30,10 @@ export const fixEncoding = async (config: Config) => {
       const utf8Buffer = tryConvertToUtf8(rawBuffer, [encoding, 'gb2312'])
       if (!utf8Buffer) continue
       await write(filePath, utf8Buffer)
-    } catch {
-      echo(`skip encoding conversion for '${filePath}'`)
+    } catch (error) {
+      echo(
+        `skip encoding conversion for '${filePath}': ${error instanceof Error ? error.message : String(error)}`,
+      )
       continue
     }
   }

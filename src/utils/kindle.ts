@@ -1,5 +1,7 @@
 import { copy, echo, getBasename, glob, isExist } from 'fire-keeper'
 
+import { normalizeSerial } from './serial.js'
+
 import type { Config } from '../core/config.js'
 
 type MobiCache = {
@@ -8,10 +10,6 @@ type MobiCache = {
 }
 
 let mobiCache: MobiCache | null = null
-
-const SERIAL_SUFFIX = /-\d+$/
-
-const normalizeSerial = (name: string) => name.replace(SERIAL_SUFFIX, '')
 
 const loadMobiCache = async (config: Config): Promise<MobiCache> => {
   const basenames = (await glob(`${config.documents}/*.mobi`)).map((path) =>

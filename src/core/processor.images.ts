@@ -2,20 +2,10 @@
 import { getBasename, glob, write } from 'fire-keeper'
 import { Jimp } from 'jimp'
 
+import { HTML_TEMPLATE } from '../constants/html.js'
 import { sortByBasename } from '../utils/format.js'
 
 import type { Config } from './config.js'
-
-const HTML_TEMPLATE = [
-  '<html lang="zh-cmn-Hans">',
-  '<head>',
-  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>',
-  '</head>',
-  '<body>',
-  '{{content}}',
-  '</body>',
-  '</html>',
-].join('')
 
 const buildImageHtml = async (config: Config, imagePath: string) => {
   const image = await Jimp.read(imagePath)
