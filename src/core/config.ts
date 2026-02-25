@@ -27,20 +27,31 @@ type FileConfig = {
   }
 }
 
-const selectPath = (input: string | Record<string, string>) =>
-  typeof input === 'string' ? input : input[os()]
+const selectPath = (input: string | Record<string, string>, field: string) => {
+  if (typeof input === 'string') return input
+
+  const platform = os()
+  const value = input[platform]
+  if (!value) {
+    throw new Error(
+      `missing config path for '${field}' on platform '${platform}'`,
+    )
+  }
+
+  return value
+}
 
 export const loadConfig = async (): Promise<Config> => {
   const file = await read<FileConfig>('config.yaml')
   if (!file) throw new Error('config.yaml not found')
   return {
-    documents: selectPath(file.basic.documents),
-    kindlegen: selectPath(file.basic.kindlegen),
+    documents: selectPath(file.basic.documents, 'basic.documents'),
+    kindlegen: selectPath(file.basic.kindlegen, 'basic.kindlegen'),
     mangaMaxWidth: file.manga.maxWidth,
     mangaQuality: file.manga.quality,
-    mangaStorage: selectPath(file.manga.storage),
+    mangaStorage: selectPath(file.manga.storage, 'manga.storage'),
     novelFileSize: file.novel.fileSize,
-    novelStorage: selectPath(file.novel.storage),
+    novelStorage: selectPath(file.novel.storage, 'novel.storage'),
     temp: './temp/kindle',
   }
 }

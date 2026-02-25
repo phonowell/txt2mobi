@@ -32,7 +32,12 @@ export const removeOrphaned = async (config: Config) => {
 
   if (orphanedMobis.length) await remove(orphanedMobis)
 
-  const mobiNames = toBasenameSet(mobiFiles)
+  const removedMobiNames = toBasenameSet(orphanedMobis)
+  const mobiNames = new Set(
+    mobiFiles
+      .map((path) => getBasename(path))
+      .filter((name) => !removedMobiNames.has(name)),
+  )
   const orphanedSdr = sdrDirs.filter(
     (path) => !mobiNames.has(getBasename(path)),
   )

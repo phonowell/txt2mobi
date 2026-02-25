@@ -1,0 +1,35 @@
+# llms.txt
+Project: txt2mobi
+Repository: https://github.com/phonowell/txt2mobi
+Homepage: https://github.com/phonowell/txt2mobi#readme
+
+Summary (EN): TypeScript CLI to convert TXT novels and manga image folders into MOBI and sync to Kindle.
+摘要 (ZH): 将 TXT 小说与漫画图片目录转换为 MOBI 并同步到 Kindle 的 TypeScript 命令行工具。
+
+Primary use cases (EN):
+- Batch convert Chinese TXT novels to MOBI with encoding normalization and chunk splitting
+- Convert manga image folders to MOBI and sync to Kindle documents
+主要用途 (ZH):
+- 批量将中文 TXT 小说修复编码并分卷后转换为 MOBI
+- 将漫画图片目录转换为 MOBI 并同步到 Kindle documents
+
+Keywords (EN): kindle, mobi, txt-to-mobi, ebook-converter, manga, cli, typescript
+关键词 (ZH): kindle, mobi, txt转mobi, 电子书转换, 漫画转换, 命令行工具, typescript
+
+Install (EN): pnpm install
+安装 (ZH): pnpm install
+
+Quick usage (EN):
+- Edit config.yaml
+- Connect Kindle
+- Run: pnpm start
+快速使用 (ZH):
+- 修改 config.yaml
+- 连接 Kindle
+- 运行：pnpm start
+
+API/Docs: https://github.com/phonowell/txt2mobi#readme
+Examples: https://github.com/phonowell/txt2mobi/tree/main/test
+License: MIT
+Citation: none
+Contact: https://github.com/phonowell/txt2mobi/issues

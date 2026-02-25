@@ -68,4 +68,29 @@ describe('loadConfig 平台与异常', () => {
     expect(config.mangaStorage).toBe('/only/manga')
     expect(config.novelStorage).toBe('/only/novel')
   })
+
+  it('should throw when current platform path is missing', async () => {
+    vi.doMock('fire-keeper', () => ({
+      read: () => ({
+        basic: {
+          documents: { macos: '/mac/doc' },
+          kindlegen: { macos: '/mac/kindlegen' },
+        },
+        manga: {
+          storage: { macos: '/mac/manga' },
+          maxWidth: 1280,
+          quality: 80,
+        },
+        novel: {
+          storage: { macos: '/mac/novel' },
+          fileSize: 200000,
+        },
+      }),
+      os: () => 'windows',
+    }))
+    const { loadConfig } = await import('../src/core/config.js')
+    await expect(loadConfig()).rejects.toThrow(
+      "missing config path for 'basic.documents' on platform 'windows'",
+    )
+  })
 })

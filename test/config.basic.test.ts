@@ -8,10 +8,6 @@ afterEach(() => {
 })
 
 describe('loadConfig 基础功能', () => {
-  it('should be a function', () => {
-    expect(typeof loadConfig).toBe('function')
-  })
-
   it('should load and normalize config.yaml (platform: macos)', async () => {
     vi.doMock('fire-keeper', () => ({
       read: () => ({

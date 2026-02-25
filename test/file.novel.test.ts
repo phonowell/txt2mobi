@@ -13,11 +13,7 @@ beforeEach(() => {
   write = vi.fn()
   vi.doMock('fire-keeper', () => ({
     glob,
-    getBasename: (p: string) =>
-      p
-        .split('/')
-        .pop()
-        ?.replace(/\.[^.]+$/, '') ?? '',
+    getBasename: (p: string) => p.split('/').pop() ?? '',
     read,
     remove,
     write,
@@ -78,5 +74,14 @@ describe('file utils - cleanNovelNames', () => {
     const longName = write.mock.calls[1][0].split('/').pop()
     const baseName = longName.replace(/\.txt$/, '')
     expect(baseName.length).toBeLessThanOrEqual(20)
+  })
+
+  it('should not append duplicated txt extension', async () => {
+    glob.mockResolvedValue(['/mock/novel/[番外]测试书.txt'])
+    const fileUtils = await import('../src/utils/basic.js')
+    await fileUtils.cleanNovelNames(mockConfig)
+
+    const targetName = write.mock.calls[0][0].split('/').pop()
+    expect(targetName).toBe('测试书.txt')
   })
 })

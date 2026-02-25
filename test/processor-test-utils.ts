@@ -33,9 +33,13 @@ export const mockJimpRead = vi.fn(() => ({
 }))
 /** mock: iconv-lite */
 export const mockIconv = {
-  encode: vi.fn(() => Buffer.from('mock', 'utf-8')),
-  decode: vi.fn(() => 'mock'),
+  encode: vi.fn((input: string, _encoding: string) =>
+    Buffer.from(input, 'utf-8'),
+  ),
+  decode: vi.fn((_buffer: Buffer, _encoding: string) => 'mock'),
+  encodingExists: vi.fn((_encoding: string) => true),
 }
+export const mockChardetDetect = vi.fn(() => 'UTF-8')
 
 /**
  * 统一 mock processor 相关依赖，并自动清理
@@ -55,7 +59,16 @@ export const setupProcessorMocks = () => {
   vi.mock('jimp', () => ({
     Jimp: { read: mockJimpRead },
   }))
-  vi.mock('iconv-lite', () => mockIconv)
+  vi.mock('iconv-lite', () => ({
+    default: mockIconv,
+    ...mockIconv,
+  }))
+  vi.mock('chardet', () => ({
+    detect: mockChardetDetect,
+    default: {
+      detect: mockChardetDetect,
+    },
+  }))
 
   beforeEach(() => {
     vi.resetModules()
@@ -82,6 +95,8 @@ export const clearProcessorMocks = () => {
   mockJimpRead.mockClear()
   mockIconv.encode.mockClear()
   mockIconv.decode.mockClear()
+  mockIconv.encodingExists.mockClear()
+  mockChardetDetect.mockClear()
 }
 
 /**

@@ -47,6 +47,11 @@ describe('file utils - removeOrphaned', () => {
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.removeOrphaned(mockConfig)
     expect(remove).toHaveBeenCalledTimes(2) // mobi and sdr removal
+    expect(remove).toHaveBeenNthCalledWith(1, ['/mock/documents/3.mobi'])
+    expect(remove).toHaveBeenNthCalledWith(2, [
+      '/mock/documents/3.sdr',
+      '/mock/documents/2.sdr',
+    ])
   })
 
   it('should skip removal when no orphaned files', async () => {

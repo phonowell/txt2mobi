@@ -15,6 +15,8 @@ const escapeForWindows = (path: string) =>
 const replaceLastSegment = (path: string, next: string) =>
   path.replace(/[^\\/]+$/, next)
 
+const removeTxtExtension = (name: string) => name.replace(/\.txt$/i, '')
+
 export const cleanName = (name: string) => {
   const replaced = name
     .replace(/!/g, '！')
@@ -70,8 +72,9 @@ export const cleanNovelNames = async (config: Config) => {
 
   for (const filePath of novelFiles) {
     const currentName = getBasename(filePath)
-    const newName = cleanName(currentName)
-    if (newName === currentName) continue
+    const currentBaseName = removeTxtExtension(currentName)
+    const newName = cleanName(currentBaseName)
+    if (newName === currentBaseName) continue
 
     const content = await readAndRemove(filePath)
     const target = replaceLastSegment(filePath, `${newName}.txt`)

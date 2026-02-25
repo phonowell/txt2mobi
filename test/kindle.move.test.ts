@@ -1,27 +1,21 @@
 // vitest for moveToKindle
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// 类型声明
-declare global {
-  var isExistMock: ReturnType<typeof vi.fn>
-  var globMock: ReturnType<typeof vi.fn>
-  var copyMock: ReturnType<typeof vi.fn>
-  var getBasenameMock: ReturnType<typeof vi.fn>
-  var echoMock: ReturnType<typeof vi.fn>
-}
-
-globalThis.isExistMock = vi.fn()
-globalThis.globMock = vi.fn()
-globalThis.copyMock = vi.fn()
-globalThis.getBasenameMock = vi.fn()
-globalThis.echoMock = vi.fn()
+const { isExistMock, globMock, copyMock, getBasenameMock, echoMock } =
+  vi.hoisted(() => ({
+    isExistMock: vi.fn(),
+    globMock: vi.fn(),
+    copyMock: vi.fn(),
+    getBasenameMock: vi.fn(),
+    echoMock: vi.fn(),
+  }))
 
 vi.mock('fire-keeper', () => ({
-  isExist: (...args: unknown[]) => globalThis.isExistMock(...args),
-  glob: (...args: unknown[]) => globalThis.globMock(...args),
-  copy: (...args: unknown[]) => globalThis.copyMock(...args),
-  getBasename: (...args: unknown[]) => globalThis.getBasenameMock(...args),
-  echo: (...args: unknown[]) => globalThis.echoMock(...args),
+  isExist: isExistMock,
+  glob: globMock,
+  copy: copyMock,
+  getBasename: getBasenameMock,
+  echo: echoMock,
 }))
 
 import type { Config } from '../src/core/config'
@@ -43,18 +37,18 @@ describe('kindle utils - moveToKindle', () => {
 
   beforeEach(async () => {
     vi.resetModules()
-    globalThis.isExistMock.mockReset()
-    globalThis.globMock.mockReset()
-    globalThis.copyMock.mockReset()
-    globalThis.getBasenameMock.mockReset()
-    globalThis.echoMock.mockReset()
+    isExistMock.mockReset()
+    globMock.mockReset()
+    copyMock.mockReset()
+    getBasenameMock.mockReset()
+    echoMock.mockReset()
     kindleUtils = await import('../src/utils/kindle.js')
   })
 
   it('calls copy with correct arguments', async () => {
-    globalThis.getBasenameMock.mockImplementation(() => 'book1')
+    getBasenameMock.mockImplementation(() => 'book1')
     await kindleUtils.moveToKindle(mockConfig, '/mock/documents/book1.mobi')
-    expect(globalThis.copyMock).toHaveBeenCalledWith(
+    expect(copyMock).toHaveBeenCalledWith(
       '/mock/temp/book1.mobi',
       '/mock/documents',
     )

@@ -1,77 +1,50 @@
 # CLAUDE.md
 
 ## 元原则
+- 精简冗余 / 冲突信代码 / 最小化实现
+- 客观诚实：不编造、不掩盖不确定性、不因情绪改变技术判断
+- 仅保留可执行约束；通用解释性内容一律删除
 
-精简冗余 · 冲突信代码
+## 关键约束
+- 子任务模型：`Task` 可用时优先 `haiku`
+- Skill 调用后必须等待完成再执行其他操作
+- `>=3` 步任务必须创建并维护 `/plans/task_plan_{suffix}.md`
+- 优先一次性批量 Edit，避免碎片化小改
+- `try-catch` 仅用于高 ROI：边界 I/O、外部依赖、可恢复失败
+- 非空断言 `!` 出现 `>=5` 处：优先重构类型，禁止 `eslint-disable` 批量压制
+- 新增/删除/重命名需同步更新：导出、脚本、测试、相关文档条目
+- 源码改动后必须通过：`pnpm lint` + `pnpm test`
+- 规则冲突时以当前仓库代码与可执行命令结果为准
 
-## 模型约束
-
-子任务模型：Task 工具可用 haiku
-
-## Skill 使用约束
-
-调用后必须等待完成再执行其他操作
-
-## 客观诚实原则
-
-不主观评价 · 不因用户情绪转移立场 · 不编造事实 · 立刻暴露不确定信息
-
-## 类型规范
-
-≥5处非空断言立即重构类型架构（🚫 eslint-disable 批量压制）
-
-## TodoWrite 使用约束
-
-≥3 步骤任务必须建 todo · 实时更新状态 · 完成立即标记
-
-## 输出约束
-
-禁预告文字 · 状态用符号 ✓/✗/→ · 一次性批量 Edit · 数据优先 · 直达结论 · 工具间隔零输出 · 错误格式 ✗ {位置}:{类型} · 代码块零注释 · ≥2 条用列表 · 路径缩写（. 项目根 · ~ 主目录）· 禁总结性重复 · 进度 {当前}/{总数} · 提问直入
-
-## 项目维护规则
-
-源码变更后必执行全部测试 · ESLint 检查必通过 · 最小化实现 · eslint cli 修复格式 · 省去无谓输出 · 结构化机器可解析信息 · 自动提取同步更新 · 新增/删除/变更需同步更新相关条目 · 文件内容仅面向 LLM/agent · agent维护规则模块必须放置在文件顶部
-
-## 入口
-
-src/index.ts
-
-## 模块类型
-
-ESM (tsconfig.json: module: ESNext, package.json: type: module)
-
-## 核心依赖
-
-fire-keeper, chardet, iconv-lite, jimp, vitest
+## 技术栈
+- Node.js + TypeScript（ESM）
+- 依赖：`fire-keeper` `chardet` `iconv-lite` `jimp` `radash`
+- 测试：`vitest`
+- 规范：`eslint`（含 `--fix`）
 
 ## 目录结构
+- `src/index.ts`：入口
+- `src/core/`：处理流程（`processor.images.ts` `processor.text.ts` `processor.mobi.ts` `processor.encoding.ts`，统一由 `processor.ts` 导出）
+- `src/utils/` `src/constants/` `src/validator/`
+- `tasks/`（脚本）`test/`（测试）`temp/`（缓存）
+- `config.yaml` `tsconfig.json` `package.json`（核心配置）
 
-src/core/（处理器模块，已拆分为 processor.images.ts、processor.text.ts、processor.mobi.ts、processor.encoding.ts，主入口 processor.ts 统一导出）· src/utils/（工具）· src/index.ts（入口）· tasks/（脚本）· temp/（缓存）· test/（测试）
+## 核心命令
+- `pnpm start`：`tsx src/index.ts`
+- `pnpm task <name>`：`tsx tasks/index.ts`
+- `pnpm lint`：`eslint "src/**/*.{ts,tsx}" "{tasks,test}/**/*.ts" --fix`
+- `pnpm test`：`vitest run`
+- `npx vitest --coverage --run`：覆盖率
 
-## 构建脚本
+## 工作流
+1. 明确目标与影响范围；若 `>=3` 步先建 `/plans/task_plan_{suffix}.md`
+2. 按最小改动实现；必要时批量更新关联导出/脚本/测试
+3. 运行 `pnpm lint`、`pnpm test`；失败先修复再给结果
+4. 输出基于事实与命令结果，不做主观评价
 
-start: tsx src/index.ts · task: tsx tasks/index.ts · lint: eslint "src/**/\*.{ts,tsx}" "{tasks,test}/**/\*.ts" --fix · test: vitest run
-
-## 配置文件
-
-tsconfig.json, config.yaml, package.json
-
-## 自动化脚本
-
-tasks/index.ts（入口）· tasks/fix-extensions.ts · tasks/format.ts · tasks/lf.ts · tasks/update.ts · 调用: pnpm task <name>
-
-## 产物
-
-mobi 文件同步至 Kindle（config.yaml: documents 路径）
-
-## 测试规范
-
-test/ 目录 · 19 单测文件覆盖所有核心模块 · vitest 框架 · ESM import 路径必须带 .js/.jsx 后缀 · 禁止 jest · 用例覆盖：配置加载、文件清理、Kindle工具、处理器接口、转换流程 · 覆盖率获取: npx vitest --coverage --run
-
-## 典型调用
-
-pnpm start（转换）· pnpm task <name>（任务）· pnpm run lint（检查）· pnpm test（测试）
-
-## 状态
-
-✅ 所有测试通过 (39/39) · ESLint 检查通过 · 依赖信息已同步
+## 输出格式
+- 禁预告文字；直达结论 + 证据
+- 状态用 `✓/✗/→`；错误格式：`✗ {位置}:{类型}`
+- 数据优先；`>=2` 条信息用列表
+- 路径可缩写：`.` 项目根、`~` 主目录
+- 禁总结性重复；命令间不插入无意义文本
