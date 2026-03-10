@@ -7,8 +7,8 @@ const cleanTempDir = vi.fn<(...args: unknown[]) => Promise<void>>()
 const mobiExists = vi.fn<(...args: unknown[]) => Promise<boolean>>()
 const moveToKindle = vi.fn<(...args: unknown[]) => Promise<void>>()
 const glob = vi.fn<(...args: unknown[]) => Promise<string[]>>()
-const processImages = vi.fn<(...args: unknown[]) => Promise<void>>()
-const convertToMobi = vi.fn<(...args: unknown[]) => Promise<void>>()
+const processImages = vi.fn<(...args: unknown[]) => Promise<string | null>>()
+const convertToMobi = vi.fn<(...args: unknown[]) => Promise<string>>()
 
 vi.mock('../src/utils/file.js', () => ({
   cleanMangaNames,
@@ -44,8 +44,12 @@ describe('convertManga', () => {
     cleanMangaNames.mockResolvedValue(['/mock/manga/1', '/mock/manga/2'])
     glob.mockResolvedValue(['/mock/manga/1', '/mock/manga/2'])
     mobiExists.mockResolvedValue(false)
-    processImages.mockResolvedValue()
-    convertToMobi.mockResolvedValue()
+    processImages
+      .mockResolvedValueOnce('/mock/temp/1.html')
+      .mockResolvedValueOnce('/mock/temp/2.html')
+    convertToMobi
+      .mockResolvedValueOnce('/mock/temp/1.mobi')
+      .mockResolvedValueOnce('/mock/temp/2.mobi')
     moveToKindle.mockResolvedValue()
     cleanTempDir.mockResolvedValue()
   })
@@ -70,6 +74,12 @@ describe('convertManga', () => {
     expect(processImages).toHaveBeenCalledTimes(2)
     expect(convertToMobi).toHaveBeenCalledTimes(2)
     expect(moveToKindle).toHaveBeenCalledTimes(2)
+    expect(convertToMobi).toHaveBeenNthCalledWith(
+      1,
+      config,
+      '/mock/temp/1.html',
+    )
+    expect(moveToKindle).toHaveBeenNthCalledWith(1, config, '/mock/temp/1.mobi')
     expect(cleanTempDir).toHaveBeenCalledWith(config)
   })
 })

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../utils/file.js', () => ({
+vi.mock('../src/utils/file.js', () => ({
   cleanNovelNames: vi.fn(() => Promise.resolve(['/mock/novel/1.txt'])),
   cleanTempDir: vi.fn(() => Promise.resolve()),
 }))
@@ -12,7 +12,7 @@ const splitText = vi.fn(() =>
 const processText = vi.fn(() => Promise.resolve())
 const convertToMobi = vi.fn(() => Promise.resolve())
 
-vi.mock('../utils/kindle.js', () => ({
+vi.mock('../src/utils/kindle.js', () => ({
   mobiExists,
   moveToKindle,
 }))
@@ -36,7 +36,7 @@ vi.mock('../src/core/processor.js', () => ({
 }))
 
 describe('convertNovel 异常与边界', () => {
-  it('should skip files if mobiExists returns true', async () => {
+  it('should skip already-synced split files', async () => {
     const { convertNovel } = await import('../src/core/converter.js')
 
     const config = {
@@ -51,7 +51,7 @@ describe('convertNovel 异常与边界', () => {
     }
 
     await convertNovel(config)
-    expect(splitText).not.toHaveBeenCalled()
+    expect(splitText).toHaveBeenCalledTimes(1)
     expect(processText).not.toHaveBeenCalled()
     expect(convertToMobi).not.toHaveBeenCalled()
     expect(moveToKindle).not.toHaveBeenCalled()

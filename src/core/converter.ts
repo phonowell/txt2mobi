@@ -26,9 +26,10 @@ export const convertManga = async (config: Config) => {
 
   for (const source of sources) {
     if (await mobiExists(config, source)) continue
-    await processImages(config, source)
-    await convertToMobi(config, source)
-    await moveToKindle(config, source)
+    const htmlPath = await processImages(config, source)
+    if (!htmlPath) continue
+    const mobiPath = await convertToMobi(config, htmlPath)
+    await moveToKindle(config, mobiPath)
   }
 
   await cleanTempDir(config)
@@ -40,12 +41,13 @@ export const convertNovel = async (config: Config) => {
 
   const novelFiles = await glob(`${config.novelStorage}/*.txt`)
   for (const file of novelFiles) {
-    if (await mobiExists(config, file)) continue
     const splitFiles = await splitText(config, file)
     for (const splitFile of splitFiles) {
-      await processText(config, splitFile)
-      await convertToMobi(config, splitFile)
-      await moveToKindle(config, splitFile)
+      if (await mobiExists(config, splitFile)) continue
+      const htmlPath = await processText(config, splitFile)
+      if (!htmlPath) continue
+      const mobiPath = await convertToMobi(config, htmlPath)
+      await moveToKindle(config, mobiPath)
     }
   }
 

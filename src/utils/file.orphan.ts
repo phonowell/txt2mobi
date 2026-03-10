@@ -18,7 +18,7 @@ export const removeOrphaned = async (config: Config) => {
     glob(`${config.mangaStorage}/*`, { onlyDirectories: true }),
     glob(`${config.novelStorage}/*.txt`),
     glob(`${config.documents}/*.mobi`),
-    glob(`${config.documents}/*.sdr`, { onlyFiles: false }),
+    glob(`${config.documents}/*.sdr`, { onlyDirectories: true }),
   ])
 
   const mangaNames = toBasenameSet(mangaDirs)

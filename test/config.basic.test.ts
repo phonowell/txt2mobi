@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { loadConfig } from '../src/core/config.js'
-
 afterEach(() => {
   vi.resetModules()
   vi.clearAllMocks()
@@ -10,6 +8,7 @@ afterEach(() => {
 describe('loadConfig 基础功能', () => {
   it('should load and normalize config.yaml (platform: macos)', async () => {
     vi.doMock('fire-keeper', () => ({
+      normalizePath: (value: string) => `/normalized${value}`,
       read: () => ({
         basic: {
           documents: { macos: '/mac/doc', windows: 'C:/doc' },
@@ -30,14 +29,14 @@ describe('loadConfig 基础功能', () => {
     const { loadConfig } = await import('../src/core/config.js')
     const config = await loadConfig()
     expect(config).toEqual({
-      documents: '/mac/doc',
-      kindlegen: '/mac/kindlegen',
+      documents: '/normalized/mac/doc',
+      kindlegen: '/normalized/mac/kindlegen',
       mangaMaxWidth: 1280,
       mangaQuality: 80,
-      mangaStorage: '/mac/manga',
+      mangaStorage: '/normalized/mac/manga',
       novelFileSize: 200000,
-      novelStorage: '/mac/novel',
-      temp: './temp/kindle',
+      novelStorage: '/normalized/mac/novel',
+      temp: '/normalized./temp/kindle',
     })
   })
 })

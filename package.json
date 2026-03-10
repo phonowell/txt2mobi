@@ -44,18 +44,34 @@
     "chinese-novel"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "bin": {
+    "txt2mobi": "dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "readme.md",
+    "license.md",
+    "llms.txt",
+    "CHANGELOG.md"
+  ],
+  "main": "dist/index.js",
   "name": "txt2mobi",
   "repository": {
     "type": "git",
     "url": "https://github.com/phonowell/txt2mobi.git"
   },
   "scripts": {
-    "lint": "eslint \"src/**/*.{ts,tsx}\" \"{tasks,test}/**/*.ts\" --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"tasks/**/*.ts\" \"test/**/*.ts\" --fix",
+    "prepack": "pnpm build",
     "start": "tsx src/index.ts",
     "task": "tsx tasks/index.ts",
     "test": "vitest run"
   },
+  "types": "dist/index.d.ts",
   "type": "module",
   "url": "https://github.com/phonowell/txt2mobi",
   "version": "0.0.6"

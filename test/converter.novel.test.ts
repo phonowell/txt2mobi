@@ -1,15 +1,30 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../utils/file.js', () => ({
+const fixEncoding = vi.fn(() => Promise.resolve())
+const splitText = vi.fn(() =>
+  Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt']),
+)
+const processText = vi.fn((_, filePath: string) =>
+  Promise.resolve(filePath.replace('.txt', '.html')),
+)
+const convertToMobi = vi.fn((config, htmlPath: string) =>
+  Promise.resolve(
+    `${config.temp}/${htmlPath.split('/').pop()?.replace('.html', '.mobi')}`,
+  ),
+)
+const mobiExists = vi.fn(() => Promise.resolve(false))
+const moveToKindle = vi.fn(() => Promise.resolve())
+
+vi.mock('../src/utils/file.js', () => ({
   cleanNovelNames: vi.fn(() => Promise.resolve([])),
   cleanTempDir: vi.fn(() => Promise.resolve()),
 }))
-vi.mock('../utils/kindle.js', () => ({
-  mobiExists: vi.fn(() => Promise.resolve(false)),
-  moveToKindle: vi.fn(() => Promise.resolve()),
+vi.mock('../src/utils/kindle.js', () => ({
+  mobiExists,
+  moveToKindle,
 }))
 vi.mock('fire-keeper', () => ({
-  glob: vi.fn(() => Promise.resolve([])),
+  glob: vi.fn(() => Promise.resolve(['/mock/novel/1.txt'])),
   os: () => 'macos',
   getBasename: (p: string) => p.split('/').pop() ?? '',
   remove: vi.fn(() => Promise.resolve()),
@@ -21,16 +36,14 @@ vi.mock('fire-keeper', () => ({
   echo: vi.fn(() => void 0),
 }))
 vi.mock('../src/core/processor.js', () => ({
-  fixEncoding: vi.fn(() => Promise.resolve()),
-  splitText: vi.fn(() =>
-    Promise.resolve(['/mock/novel/1-1.txt', '/mock/novel/1-2.txt']),
-  ),
-  processText: vi.fn(() => Promise.resolve()),
-  convertToMobi: vi.fn(() => Promise.resolve()),
+  fixEncoding,
+  splitText,
+  processText,
+  convertToMobi,
 }))
 
 describe('convertNovel', () => {
-  it('should handle empty novel storage gracefully', async () => {
+  it('should process split files individually', async () => {
     const { convertNovel } = await import('../src/core/converter.js')
     const config = {
       mangaStorage: '/mock/manga',
@@ -42,7 +55,12 @@ describe('convertNovel', () => {
       mangaQuality: 80,
       novelFileSize: 200000,
     }
-    const result = await convertNovel(config)
-    expect(result).toBeUndefined()
+    await convertNovel(config)
+
+    expect(fixEncoding).toHaveBeenCalledWith(config)
+    expect(splitText).toHaveBeenCalledWith(config, '/mock/novel/1.txt')
+    expect(processText).toHaveBeenCalledTimes(2)
+    expect(convertToMobi).toHaveBeenCalledTimes(2)
+    expect(moveToKindle).toHaveBeenCalledTimes(2)
   })
 })

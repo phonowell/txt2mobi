@@ -14,6 +14,7 @@ Prerequisites:
 Quickstart:
 ```bash
 pnpm install
+pnpm build
 pnpm start
 ```
 
@@ -26,7 +27,7 @@ pnpm start
 
 - 小说 TXT 自动编码修复（优先检测并转为 UTF-8）
 - 长文本按配置自动分卷，再逐卷转换
-- 漫画目录（`.jpg`）批处理：旋转、缩放、灰度化、内嵌 HTML
+- 漫画目录（`.jpg` / `.jpeg` / `.png`）批处理：旋转、缩放、灰度化、内嵌 HTML
 - 转换后自动复制到 Kindle `documents` 目录
 - 清理无效/孤儿文件，减少设备侧冗余
 
@@ -40,6 +41,7 @@ pnpm start
 
 ```bash
 pnpm install
+pnpm build
 pnpm start
 ```
 
@@ -63,6 +65,7 @@ pnpm start
 ## 常用命令
 
 - `pnpm start`: 执行完整转换和同步
+- `pnpm build`: 构建 CLI 到 `dist/`
 - `pnpm test`: 运行测试
 - `pnpm lint`: 运行并修复 lint
 

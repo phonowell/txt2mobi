@@ -1,4 +1,4 @@
-import { os, read } from 'fire-keeper'
+import { normalizePath, os, read } from 'fire-keeper'
 
 export type Config = {
   documents: string
@@ -41,17 +41,20 @@ const selectPath = (input: string | Record<string, string>, field: string) => {
   return value
 }
 
+const resolvePath = (input: string | Record<string, string>, field: string) =>
+  normalizePath(selectPath(input, field))
+
 export const loadConfig = async (): Promise<Config> => {
   const file = await read<FileConfig>('config.yaml')
   if (!file) throw new Error('config.yaml not found')
   return {
-    documents: selectPath(file.basic.documents, 'basic.documents'),
-    kindlegen: selectPath(file.basic.kindlegen, 'basic.kindlegen'),
+    documents: resolvePath(file.basic.documents, 'basic.documents'),
+    kindlegen: resolvePath(file.basic.kindlegen, 'basic.kindlegen'),
     mangaMaxWidth: file.manga.maxWidth,
     mangaQuality: file.manga.quality,
-    mangaStorage: selectPath(file.manga.storage, 'manga.storage'),
+    mangaStorage: resolvePath(file.manga.storage, 'manga.storage'),
     novelFileSize: file.novel.fileSize,
-    novelStorage: selectPath(file.novel.storage, 'novel.storage'),
-    temp: './temp/kindle',
+    novelStorage: resolvePath(file.novel.storage, 'novel.storage'),
+    temp: normalizePath('./temp/kindle'),
   }
 }

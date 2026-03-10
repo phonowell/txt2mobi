@@ -16,8 +16,16 @@ export const mockGlob = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
   Promise.resolve([]),
 )
 export const mockExec = vi.fn(() => Promise.resolve())
-export const mockGetBasename = vi.fn((p: string) => p.split('/').pop() ?? '')
+export const mockGetBasename = vi.fn(
+  (p: string) =>
+    p
+      .split('/')
+      .pop()
+      ?.replace(/\.[^.]+$/, '') ?? '',
+)
+export const mockIsExist = vi.fn(() => Promise.resolve(true))
 export const mockOs = vi.fn(() => 'macos')
+export const mockNormalizePath = vi.fn((input: string) => input)
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const mockEcho = vi.fn(() => {})
 /** mock: jimp.Jimp.read */
@@ -53,6 +61,8 @@ export const setupProcessorMocks = () => {
     glob: mockGlob,
     exec: mockExec,
     getBasename: mockGetBasename,
+    isExist: mockIsExist,
+    normalizePath: mockNormalizePath,
     os: mockOs,
     echo: mockEcho,
   }))
@@ -90,7 +100,9 @@ export const clearProcessorMocks = () => {
   mockGlob.mockClear()
   mockExec.mockClear()
   mockGetBasename.mockClear()
+  mockIsExist.mockClear()
   mockOs.mockClear()
+  mockNormalizePath.mockClear()
   mockEcho.mockClear()
   mockJimpRead.mockClear()
   mockIconv.encode.mockClear()

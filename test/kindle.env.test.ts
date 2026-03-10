@@ -38,7 +38,7 @@ describe('kindle utils - validateEnv', () => {
     let result = await kindleUtils.validateEnv(mockConfig)
     expect(result).toBe(false)
     expect(echo).toHaveBeenCalledWith(
-      "found no 'kindlegen', run 'brew cask install kindlegen' to install it",
+      "found no kindlegen binary at '/mock/kindlegen'",
     )
 
     // Test missing documents directory

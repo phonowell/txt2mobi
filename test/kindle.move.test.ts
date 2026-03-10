@@ -42,12 +42,14 @@ describe('kindle utils - moveToKindle', () => {
     copyMock.mockReset()
     getBasenameMock.mockReset()
     echoMock.mockReset()
+    globMock.mockResolvedValue([])
     kindleUtils = await import('../src/utils/kindle.js')
   })
 
   it('calls copy with correct arguments', async () => {
+    isExistMock.mockResolvedValue(true)
     getBasenameMock.mockImplementation(() => 'book1')
-    await kindleUtils.moveToKindle(mockConfig, '/mock/documents/book1.mobi')
+    await kindleUtils.moveToKindle(mockConfig, '/mock/temp/book1.mobi')
     expect(copyMock).toHaveBeenCalledWith(
       '/mock/temp/book1.mobi',
       '/mock/documents',

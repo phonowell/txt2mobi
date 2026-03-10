@@ -7,6 +7,8 @@ import { sortByBasename } from '../utils/format.js'
 
 import type { Config } from './config.js'
 
+const IMAGE_PATTERNS = ['*.jpg', '*.jpeg', '*.JPG', '*.JPEG', '*.png', '*.PNG']
+
 const buildImageHtml = async (config: Config, imagePath: string) => {
   const image = await Jimp.read(imagePath)
   if (image.width > image.height) image.rotate(90)
@@ -26,13 +28,22 @@ export const processImages = async (config: Config, source: string) => {
   const basename = getBasename(source)
   const target = `${config.temp}/${basename}.html`
 
-  const imagePaths = sortByBasename(await glob(`${source}/*.jpg`))
-  if (!imagePaths.length) return
+  const imagePaths = sortByBasename([
+    ...new Set(
+      (
+        await Promise.all(
+          IMAGE_PATTERNS.map((pattern) => glob(`${source}/${pattern}`)),
+        )
+      ).flat(),
+    ),
+  ])
+  if (!imagePaths.length) return null
 
-  const htmlElements = await Promise.all(
-    imagePaths.map((imagePath) => buildImageHtml(config, imagePath)),
-  )
+  const htmlElements: string[] = []
+  for (const imagePath of imagePaths)
+    htmlElements.push(await buildImageHtml(config, imagePath))
 
   const content = HTML_TEMPLATE.replace('{{content}}', htmlElements.join('\n'))
   await write(target, content)
+  return target
 }

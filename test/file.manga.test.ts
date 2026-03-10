@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const glob = vi.fn()
-const exec = vi.fn()
+const isExist = vi.fn()
+const rename = vi.fn()
 
 vi.mock('fire-keeper', () => ({
   glob,
@@ -10,13 +11,14 @@ vi.mock('fire-keeper', () => ({
       .split('/')
       .pop()
       ?.replace(/\.[^.]+$/, '') ?? '',
-  exec,
-  os: () => 'macos',
+  isExist,
+  rename,
 }))
 
 beforeEach(() => {
   vi.clearAllMocks()
   glob.mockResolvedValue([])
+  isExist.mockResolvedValue(false)
 })
 
 const mockConfig = {
@@ -35,24 +37,23 @@ describe('file utils - cleanMangaNames', () => {
     glob.mockResolvedValue(['/mock/manga/dirty[1]', '/mock/manga/clean'])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
-    const { exec } = await import('fire-keeper')
-    expect(exec).toHaveBeenCalled()
+    expect(rename).toHaveBeenCalledWith('/mock/manga/dirty[1]', 'dirty', {
+      echo: false,
+    })
   })
 
   it('should skip already clean names', async () => {
     glob.mockResolvedValue(['/mock/manga/clean'])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
-    const { exec } = await import('fire-keeper')
-    expect(exec).not.toHaveBeenCalled()
+    expect(rename).not.toHaveBeenCalled()
   })
 
   it('should handle empty manga directory', async () => {
     glob.mockResolvedValue([])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
-    const { exec } = await import('fire-keeper')
-    expect(exec).not.toHaveBeenCalled()
+    expect(rename).not.toHaveBeenCalled()
   })
 
   it('should handle glob throwing error', async () => {
@@ -64,26 +65,27 @@ describe('file utils - cleanMangaNames', () => {
   it('should clean reserved characters and limit length', async () => {
     glob.mockResolvedValue([
       '/mock/manga/dirty\\/:*?"<>|',
-      `/mock/manga/${'b'.repeat(120)}`,
+      `/mock/manga/${'b'.repeat(140)}`,
     ])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanMangaNames(mockConfig)
-    const { exec } = await import('fire-keeper')
-    const execMock = vi.mocked(exec)
-    // 英文保留字符应被移除（允许中文符号）
-    const mvMatch =
-      typeof execMock.mock.calls[0][0] === 'string'
-        ? execMock.mock.calls[0][0].match(/mv ".*\/(.+)" ".*\/(.+)"/)
-        : null
-    const newName = mvMatch?.[2]
+
+    const newName = rename.mock.calls[0][1]
     expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
-    expect(newName).toMatch(/[：？]/)
-    // 文件名长度应被限制
-    const callArg = execMock.mock.calls[1][0]
-    const match =
-      typeof callArg === 'string'
-        ? callArg.match(/mv ".*\/(.+)" ".*\/(.+)"/)
-        : null
-    expect(match?.[2]?.length).toBeLessThanOrEqual(20)
+    expect(rename.mock.calls[1][1].length).toBeLessThanOrEqual(120)
+  })
+
+  it('should avoid collisions by appending a numeric suffix', async () => {
+    glob.mockResolvedValue(['/mock/manga/[番外]', '/mock/manga/番外'])
+    isExist.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
+    const fileUtils = await import('../src/utils/basic.js')
+    await fileUtils.cleanMangaNames(mockConfig)
+
+    expect(rename).toHaveBeenCalledWith('/mock/manga/[番外]', 'untitled 2', {
+      echo: false,
+    })
+    expect(rename).not.toHaveBeenCalledWith('/mock/manga/番外', '番外', {
+      echo: false,
+    })
   })
 })

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { run } from 'fire-keeper'
 
 import { loadConfig } from './core/config.js'

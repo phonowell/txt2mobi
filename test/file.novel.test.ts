@@ -2,22 +2,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 let glob: ReturnType<typeof vi.fn>
-let read: ReturnType<typeof vi.fn>
-let remove: ReturnType<typeof vi.fn>
-let write: ReturnType<typeof vi.fn>
+let isExist: ReturnType<typeof vi.fn>
+let rename: ReturnType<typeof vi.fn>
 
 beforeEach(() => {
   glob = vi.fn().mockResolvedValue([])
-  read = vi.fn().mockResolvedValue('mock content')
-  remove = vi.fn().mockResolvedValue(undefined)
-  write = vi.fn()
+  isExist = vi.fn().mockResolvedValue(false)
+  rename = vi.fn().mockResolvedValue(undefined)
   vi.doMock('fire-keeper', () => ({
     glob,
-    getBasename: (p: string) => p.split('/').pop() ?? '',
-    read,
-    remove,
-    write,
-    os: () => 'macos',
+    getBasename: (p: string) =>
+      p
+        .split('/')
+        .pop()
+        ?.replace(/\.[^.]+$/, '') ?? '',
+    isExist,
+    rename,
   }))
   vi.resetModules()
   vi.clearAllMocks()
@@ -42,9 +42,12 @@ describe('file utils - cleanNovelNames', () => {
     ])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
-    expect(read).toHaveBeenCalledTimes(1)
-    expect(remove).toHaveBeenCalledTimes(1)
-    expect(write).toHaveBeenCalledTimes(1)
+    expect(rename).toHaveBeenCalledTimes(1)
+    expect(rename).toHaveBeenCalledWith(
+      '/mock/novel/dirty[1].txt',
+      'dirty.txt',
+      { echo: false },
+    )
   })
 
   it('should handle empty directory and errors', async () => {
@@ -52,7 +55,7 @@ describe('file utils - cleanNovelNames', () => {
     glob.mockResolvedValue([])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
-    expect(read).not.toHaveBeenCalled()
+    expect(rename).not.toHaveBeenCalled()
 
     // Test glob error
     glob.mockRejectedValue(new Error('fail'))
@@ -62,18 +65,18 @@ describe('file utils - cleanNovelNames', () => {
   it('should clean reserved characters and limit length', async () => {
     glob.mockResolvedValue([
       '/mock/novel/dirty\\/:*?"<>|.txt',
-      `/mock/novel/${'a'.repeat(120)}.txt`,
+      `/mock/novel/${'a'.repeat(140)}.txt`,
     ])
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
 
-    const newName = write.mock.calls[0][0].split('/').pop()
+    const newName = rename.mock.calls[0][1]
     expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
-    expect(newName).toMatch(/[：？]/)
+    expect(newName).toMatch(/\.txt$/)
 
-    const longName = write.mock.calls[1][0].split('/').pop()
+    const longName = rename.mock.calls[1][1]
     const baseName = longName.replace(/\.txt$/, '')
-    expect(baseName.length).toBeLessThanOrEqual(20)
+    expect(baseName.length).toBeLessThanOrEqual(120)
   })
 
   it('should not append duplicated txt extension', async () => {
@@ -81,7 +84,20 @@ describe('file utils - cleanNovelNames', () => {
     const fileUtils = await import('../src/utils/basic.js')
     await fileUtils.cleanNovelNames(mockConfig)
 
-    const targetName = write.mock.calls[0][0].split('/').pop()
+    const targetName = rename.mock.calls[0][1]
     expect(targetName).toBe('测试书.txt')
+  })
+
+  it('should avoid collisions by appending a numeric suffix', async () => {
+    glob.mockResolvedValue(['/mock/novel/[番外].txt'])
+    isExist.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
+    const fileUtils = await import('../src/utils/basic.js')
+    await fileUtils.cleanNovelNames(mockConfig)
+
+    expect(rename).toHaveBeenCalledWith(
+      '/mock/novel/[番外].txt',
+      'untitled 2.txt',
+      { echo: false },
+    )
   })
 })

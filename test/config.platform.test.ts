@@ -8,6 +8,7 @@ afterEach(() => {
 describe('loadConfig 平台与异常', () => {
   it('should throw if config.yaml is missing', async () => {
     vi.doMock('fire-keeper', () => ({
+      normalizePath: (value: string) => `normalized:${value}`,
       read: () => undefined,
       os: () => 'macos',
     }))
@@ -17,6 +18,7 @@ describe('loadConfig 平台与异常', () => {
 
   it('should select correct platform for windows', async () => {
     vi.doMock('fire-keeper', () => ({
+      normalizePath: (value: string) => `normalized:${value}`,
       read: () => ({
         basic: {
           documents: { macos: '/mac/doc', windows: 'C:/doc' },
@@ -36,14 +38,15 @@ describe('loadConfig 平台与异常', () => {
     }))
     const { loadConfig } = await import('../src/core/config.js')
     const config = await loadConfig()
-    expect(config.documents).toBe('C:/doc')
-    expect(config.kindlegen).toBe('C:/kindlegen')
-    expect(config.mangaStorage).toBe('C:/manga')
-    expect(config.novelStorage).toBe('C:/novel')
+    expect(config.documents).toBe('normalized:C:/doc')
+    expect(config.kindlegen).toBe('normalized:C:/kindlegen')
+    expect(config.mangaStorage).toBe('normalized:C:/manga')
+    expect(config.novelStorage).toBe('normalized:C:/novel')
   })
 
   it('should support string type for all path fields', async () => {
     vi.doMock('fire-keeper', () => ({
+      normalizePath: (value: string) => `normalized:${value}`,
       read: () => ({
         basic: {
           documents: '/only/doc',
@@ -63,14 +66,15 @@ describe('loadConfig 平台与异常', () => {
     }))
     const { loadConfig } = await import('../src/core/config.js')
     const config = await loadConfig()
-    expect(config.documents).toBe('/only/doc')
-    expect(config.kindlegen).toBe('/only/kindlegen')
-    expect(config.mangaStorage).toBe('/only/manga')
-    expect(config.novelStorage).toBe('/only/novel')
+    expect(config.documents).toBe('normalized:/only/doc')
+    expect(config.kindlegen).toBe('normalized:/only/kindlegen')
+    expect(config.mangaStorage).toBe('normalized:/only/manga')
+    expect(config.novelStorage).toBe('normalized:/only/novel')
   })
 
   it('should throw when current platform path is missing', async () => {
     vi.doMock('fire-keeper', () => ({
+      normalizePath: (value: string) => `normalized:${value}`,
       read: () => ({
         basic: {
           documents: { macos: '/mac/doc' },

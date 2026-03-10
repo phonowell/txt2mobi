@@ -10,11 +10,11 @@ const glob = vi.fn<(...args: unknown[]) => Promise<string[]>>()
 const processImages = vi.fn<(...args: unknown[]) => Promise<void>>()
 const convertToMobi = vi.fn<(...args: unknown[]) => Promise<void>>()
 
-vi.mock('../utils/file.js', () => ({
+vi.mock('../src/utils/file.js', () => ({
   cleanMangaNames,
   cleanTempDir,
 }))
-vi.mock('../utils/kindle.js', () => ({ mobiExists, moveToKindle }))
+vi.mock('../src/utils/kindle.js', () => ({ mobiExists, moveToKindle }))
 vi.mock('fire-keeper', () => ({
   glob,
   os: () => 'macos',

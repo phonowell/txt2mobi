@@ -11,10 +11,12 @@ export const processText = async (config: Config, filePath: string) => {
   const target = `${config.temp}/${basename}.html`
 
   const content = await read<string>(filePath)
-  if (!content) return
+  if (!content?.trim()) return null
 
   const htmlLines = formatHtmlLines(content)
+  if (!htmlLines.length) return null
 
   const htmlContent = HTML_TEMPLATE.replace('{{content}}', htmlLines.join('\n'))
   await write(target, htmlContent)
+  return target
 }
