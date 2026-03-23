@@ -1,13 +1,10 @@
 import { copy, echo, getBasename, glob, isExist } from 'fire-keeper'
 
-import { normalizeSerial } from './serial.js'
-
 import type { Config } from '../core/config.js'
 
 type MobiCache = {
   documents: string
   originals: Set<string>
-  normalized: Set<string>
 }
 
 let mobiCache: MobiCache | null = null
@@ -19,7 +16,6 @@ const loadMobiCache = async (config: Config): Promise<MobiCache> => {
   return {
     documents: config.documents,
     originals: new Set(basenames),
-    normalized: new Set(basenames.map(normalizeSerial)),
   }
 }
 
@@ -42,11 +38,7 @@ export const mobiExists = async (config: Config, filePath: string) => {
     mobiCache = await loadMobiCache(config)
 
   const baseName = getBasename(filePath)
-  const normalized = normalizeSerial(baseName)
-
-  return (
-    mobiCache.originals.has(baseName) || mobiCache.normalized.has(normalized)
-  )
+  return mobiCache.originals.has(baseName)
 }
 
 export const moveToKindle = async (config: Config, mobiPath: string) => {
@@ -59,5 +51,4 @@ export const moveToKindle = async (config: Config, mobiPath: string) => {
     mobiCache = await loadMobiCache(config)
 
   mobiCache.originals.add(basename)
-  mobiCache.normalized.add(normalizeSerial(basename))
 }

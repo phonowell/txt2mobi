@@ -16,6 +16,12 @@
 - 源码改动后必须通过：`pnpm lint` + `pnpm test`
 - 规则冲突时以当前仓库代码与可执行命令结果为准
 
+## 项目边界
+- 这个项目是什么：面向个人本地环境的 TypeScript CLI；读取 `config.yaml`，将小说 `.txt` 与漫画图片目录转换为 `.mobi`，再复制到 Kindle `documents`
+- 这个项目不是什么：不是 Web 服务、不是桌面 GUI、不是通用电子书管理器、不是 `kindlegen` 的替代实现、不是以 SDK 为主的库项目
+- 这个项目做什么：校验 `kindlegen` 与 Kindle 挂载状态；修复 TXT 编码；按配置分卷；处理漫画图片；生成 HTML 并转换为 `.mobi`；同步产物到 Kindle；清理临时与孤儿文件；TXT 编码修复范围聚焦 UTF-8 与中文常见编码回退（`gb18030` / `gbk` / `gb2312`）
+- 这个项目不做什么：不下载或抓取内容；不管理在线书库/账号/元数据；不提供 API、守护进程或持续同步服务；不支持超出 TXT 小说与漫画图片目录之外的通用格式转换；不做通用全编码自动修复；不维护独立的 Kindle 产物清单，孤儿清理默认按当前源目录与 `documents` 下的 `.mobi` / `.sdr` 对账；不在缺少 `kindlegen` 或 Kindle 挂载时伪造成功结果
+
 ## 技术栈
 - Node.js + TypeScript（ESM）
 - 依赖：`fire-keeper` `chardet` `iconv-lite` `jimp` `radash`

@@ -22,6 +22,7 @@ junit.xml
 *.temp
 *.tmp
 .DS_Store
+/plans
 /temp
 
 # IDE

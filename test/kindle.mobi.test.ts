@@ -88,4 +88,28 @@ describe('kindle utils - mobiExists', () => {
     expect(result).toBe(false)
     expect(globMock).toHaveBeenCalledTimes(1)
   })
+
+  it('does not treat one split volume as all volumes already synced', async () => {
+    globMock.mockResolvedValue(['/mock/documents/book-01.mobi'])
+    getBasenameMock.mockImplementation(
+      (p: string) =>
+        p
+          .split('/')
+          .pop()
+          ?.replace(/\.[^.]+$/, '') ?? '',
+    )
+
+    const firstVolume = await kindleUtils.mobiExists(
+      mockConfig,
+      '/mock/temp/book-01.txt',
+    )
+    const secondVolume = await kindleUtils.mobiExists(
+      mockConfig,
+      '/mock/temp/book-02.txt',
+    )
+
+    expect(firstVolume).toBe(true)
+    expect(secondVolume).toBe(false)
+    expect(globMock).toHaveBeenCalledTimes(1)
+  })
 })

@@ -49,37 +49,37 @@ export const mockIconv = {
 }
 export const mockChardetDetect = vi.fn(() => 'UTF-8')
 
+vi.mock('fire-keeper', () => ({
+  write: mockWrite,
+  read: mockRead,
+  glob: mockGlob,
+  exec: mockExec,
+  getBasename: mockGetBasename,
+  isExist: mockIsExist,
+  normalizePath: mockNormalizePath,
+  os: mockOs,
+  echo: mockEcho,
+}))
+vi.mock('jimp', () => ({
+  Jimp: { read: mockJimpRead },
+}))
+vi.mock('iconv-lite', () => ({
+  default: mockIconv,
+  ...mockIconv,
+}))
+vi.mock('chardet', () => ({
+  detect: mockChardetDetect,
+  default: {
+    detect: mockChardetDetect,
+  },
+}))
+
 /**
  * 统一 mock processor 相关依赖，并自动清理
  * 可在各测试文件顶层直接调用
  * 支持自定义 mock 行为（如 mockRead.mockImplementation）
  */
 export const setupProcessorMocks = () => {
-  vi.mock('fire-keeper', () => ({
-    write: mockWrite,
-    read: mockRead,
-    glob: mockGlob,
-    exec: mockExec,
-    getBasename: mockGetBasename,
-    isExist: mockIsExist,
-    normalizePath: mockNormalizePath,
-    os: mockOs,
-    echo: mockEcho,
-  }))
-  vi.mock('jimp', () => ({
-    Jimp: { read: mockJimpRead },
-  }))
-  vi.mock('iconv-lite', () => ({
-    default: mockIconv,
-    ...mockIconv,
-  }))
-  vi.mock('chardet', () => ({
-    detect: mockChardetDetect,
-    default: {
-      detect: mockChardetDetect,
-    },
-  }))
-
   beforeEach(() => {
     vi.resetModules()
     vi.clearAllMocks()

@@ -75,6 +75,11 @@ pnpm start
 - 提示找不到 Kindle 路径：确认设备已连接并挂载 `documents`
 - 某些 TXT 乱码：工具会尝试自动转码，建议仍以 UTF-8 作为源文件编码
 
+## 项目边界
+
+- 小说编码修复范围聚焦 UTF-8 与中文常见编码回退（`gb18030` / `gbk` / `gb2312`），不是通用的全编码自动修复器
+- 孤儿清理策略是按 `novel.storage` / `manga.storage` 与 Kindle `documents` 下的 `.mobi` / `.sdr` 对账；项目不维护独立的 Kindle 产物清单
+
 ## 关键词
 
 - EN: kindle, mobi, txt-to-mobi, ebook-converter, manga, typescript-cli
