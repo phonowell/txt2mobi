@@ -2,12 +2,10 @@ import { glob, read, write } from 'fire-keeper'
 
 const main = async () => {
   const listSource = await glob([
-    './*.js',
-    './*.ts',
-    './src/**/*.js',
-    './src/**/*.ts',
-    './src/**/*.tsx',
-    './tasks/*.ts',
+    './*.{js,ts,mjs}',
+    './src/**/*.{js,ts,tsx}',
+    './tasks/**/*.ts',
+    './test/**/*.ts',
   ])
   for (const source of listSource) {
     const content = await read<string>(source)

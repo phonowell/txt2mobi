@@ -48,6 +48,6 @@ describe('splitText', () => {
         },
         '/mock/file.txt',
       ),
-    ).rejects.toThrow()
+    ).rejects.toThrow('found no content')
   })
 })

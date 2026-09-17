@@ -11,6 +11,8 @@ vi.mock('fire-keeper', () => ({
       .split('/')
       .pop()
       ?.replace(/\.[^.]+$/, '') ?? '',
+  getDirname: (p: string) => p.split('/').slice(0, -1).join('/'),
+  getExtname: (p: string) => p.match(/\.[^.]+$/)?.[0] ?? '',
   isExist,
   rename,
 }))
@@ -35,7 +37,7 @@ const mockConfig = {
 describe('file utils - cleanMangaNames', () => {
   it('should rename directories with dirty names', async () => {
     glob.mockResolvedValue(['/mock/manga/dirty[1]', '/mock/manga/clean'])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanMangaNames(mockConfig)
     expect(rename).toHaveBeenCalledWith('/mock/manga/dirty[1]', 'dirty', {
       echo: false,
@@ -44,21 +46,21 @@ describe('file utils - cleanMangaNames', () => {
 
   it('should skip already clean names', async () => {
     glob.mockResolvedValue(['/mock/manga/clean'])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanMangaNames(mockConfig)
     expect(rename).not.toHaveBeenCalled()
   })
 
   it('should handle empty manga directory', async () => {
     glob.mockResolvedValue([])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanMangaNames(mockConfig)
     expect(rename).not.toHaveBeenCalled()
   })
 
   it('should handle glob throwing error', async () => {
     glob.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await expect(fileUtils.cleanMangaNames(mockConfig)).rejects.toThrow('fail')
   })
 
@@ -67,18 +69,18 @@ describe('file utils - cleanMangaNames', () => {
       '/mock/manga/dirty\\/:*?"<>|',
       `/mock/manga/${'b'.repeat(140)}`,
     ])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanMangaNames(mockConfig)
 
-    const newName = rename.mock.calls[0][1]
-    expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
-    expect(rename.mock.calls[1][1].length).toBeLessThanOrEqual(120)
+    const newName = rename.mock.calls.at(0)?.[1]
+    expect(newName).not.toMatch(/[\\/:*?"<>|]/)
+    expect(rename.mock.calls.at(1)?.[1]?.length).toBeLessThanOrEqual(120)
   })
 
   it('should avoid collisions by appending a numeric suffix', async () => {
     glob.mockResolvedValue(['/mock/manga/[番外]', '/mock/manga/番外'])
     isExist.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanMangaNames(mockConfig)
 
     expect(rename).toHaveBeenCalledWith('/mock/manga/[番外]', 'untitled 2', {

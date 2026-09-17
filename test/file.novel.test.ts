@@ -16,6 +16,8 @@ beforeEach(() => {
         .split('/')
         .pop()
         ?.replace(/\.[^.]+$/, '') ?? '',
+    getDirname: (p: string) => p.split('/').slice(0, -1).join('/'),
+    getExtname: (p: string) => p.match(/\.[^.]+$/)?.[0] ?? '',
     isExist,
     rename,
   }))
@@ -40,7 +42,7 @@ describe('file utils - cleanNovelNames', () => {
       '/mock/novel/dirty[1].txt',
       '/mock/novel/clean.txt',
     ])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanNovelNames(mockConfig)
     expect(rename).toHaveBeenCalledTimes(1)
     expect(rename).toHaveBeenCalledWith(
@@ -53,7 +55,7 @@ describe('file utils - cleanNovelNames', () => {
   it('should handle empty directory and errors', async () => {
     // Test empty directory
     glob.mockResolvedValue([])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanNovelNames(mockConfig)
     expect(rename).not.toHaveBeenCalled()
 
@@ -67,31 +69,31 @@ describe('file utils - cleanNovelNames', () => {
       '/mock/novel/dirty\\/:*?"<>|.txt',
       `/mock/novel/${'a'.repeat(140)}.txt`,
     ])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanNovelNames(mockConfig)
 
-    const newName = rename.mock.calls[0][1]
-    expect(newName).not.toMatch(/[\\\/:\*\?"<>\|]/)
+    const newName = rename.mock.calls.at(0)?.[1]
+    expect(newName).not.toMatch(/[\\/:*?"<>|]/)
     expect(newName).toMatch(/\.txt$/)
 
-    const longName = rename.mock.calls[1][1]
-    const baseName = longName.replace(/\.txt$/, '')
-    expect(baseName.length).toBeLessThanOrEqual(120)
+    const longName = rename.mock.calls.at(1)?.[1]
+    const baseName = longName?.replace(/\.txt$/, '')
+    expect(baseName?.length).toBeLessThanOrEqual(120)
   })
 
   it('should not append duplicated txt extension', async () => {
     glob.mockResolvedValue(['/mock/novel/[番外]测试书.txt'])
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanNovelNames(mockConfig)
 
-    const targetName = rename.mock.calls[0][1]
+    const targetName = rename.mock.calls.at(0)?.[1]
     expect(targetName).toBe('测试书.txt')
   })
 
   it('should avoid collisions by appending a numeric suffix', async () => {
     glob.mockResolvedValue(['/mock/novel/[番外].txt'])
     isExist.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.cleanNovelNames(mockConfig)
 
     expect(rename).toHaveBeenCalledWith(

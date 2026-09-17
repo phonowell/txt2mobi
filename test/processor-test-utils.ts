@@ -15,7 +15,11 @@ export const mockRead: Mock<
 export const mockGlob = vi.fn<(...args: unknown[]) => Promise<string[]>>(() =>
   Promise.resolve([]),
 )
-export const mockExec = vi.fn(() => Promise.resolve())
+export const mockExec = vi.fn(() => Promise.resolve([0, '', []]))
+export const mockRunConcurrent = vi.fn(
+  (_concurrency: number, tasks: (() => Promise<unknown>)[]) =>
+    Promise.all(tasks.map((task) => task())),
+)
 export const mockGetBasename = vi.fn(
   (p: string) =>
     p
@@ -54,6 +58,7 @@ vi.mock('fire-keeper', () => ({
   read: mockRead,
   glob: mockGlob,
   exec: mockExec,
+  runConcurrent: mockRunConcurrent,
   getBasename: mockGetBasename,
   isExist: mockIsExist,
   normalizePath: mockNormalizePath,
@@ -99,6 +104,7 @@ export const clearProcessorMocks = () => {
   mockRead.mockClear()
   mockGlob.mockClear()
   mockExec.mockClear()
+  mockRunConcurrent.mockClear()
   mockGetBasename.mockClear()
   mockIsExist.mockClear()
   mockOs.mockClear()

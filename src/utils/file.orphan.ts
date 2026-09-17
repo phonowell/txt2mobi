@@ -7,12 +7,6 @@ import type { Config } from '../core/config.js'
 const toBasenameSet = (paths: string[]) =>
   new Set(paths.map((path) => getBasename(path)))
 
-const ensureNovelVariants = (names: Set<string>) => {
-  const variants = new Set<string>()
-  for (const name of names) variants.add(normalizeSerial(name))
-  return variants
-}
-
 export const removeOrphaned = async (config: Config) => {
   const [mangaDirs, novelFiles, mobiFiles, sdrDirs] = await Promise.all([
     glob(`${config.mangaStorage}/*`, { onlyDirectories: true }),
@@ -22,8 +16,9 @@ export const removeOrphaned = async (config: Config) => {
   ])
 
   const mangaNames = toBasenameSet(mangaDirs)
-  const novelNames = toBasenameSet(novelFiles)
-  const normalizedNovels = ensureNovelVariants(novelNames)
+  const normalizedNovels = new Set(
+    [...toBasenameSet(novelFiles)].map(normalizeSerial),
+  )
 
   const orphanedMobis = mobiFiles.filter((path) => {
     const name = getBasename(path)

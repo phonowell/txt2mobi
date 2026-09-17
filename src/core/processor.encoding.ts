@@ -1,13 +1,14 @@
 import chardet from 'chardet'
-import { echo, glob, read, write } from 'fire-keeper'
+import { echo, glob, read, runConcurrent, write } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import type { Config } from './config.js'
 
 const FALLBACK_ENCODINGS = ['gb18030', 'gbk', 'gb2312']
+const ENCODING_CONCURRENCY = 5
 
 const normalizeEncoding = (encoding: string) =>
-  encoding.toLowerCase().replace(/[^a-z0-9\-]/g, '')
+  encoding.toLowerCase().replace(/[^a-z0-9-]/g, '')
 
 const isUtf8Buffer = (buffer: Buffer) => {
   try {
@@ -47,28 +48,34 @@ const tryConvertToUtf8 = (
   return null
 }
 
+const fixFileEncoding = async (filePath: string) => {
+  const rawBuffer = await read(filePath, { raw: true })
+  if (!rawBuffer || !(rawBuffer instanceof Buffer)) return
+
+  if (isUtf8Buffer(rawBuffer)) return
+
+  try {
+    const detectedEncoding = chardet.detect(rawBuffer)
+    const utf8Buffer = tryConvertToUtf8(
+      rawBuffer,
+      buildEncodings(detectedEncoding),
+    )
+    if (!utf8Buffer) {
+      echo(`skip encoding conversion for '${filePath}': unsupported encoding`)
+      return
+    }
+    await write(filePath, utf8Buffer)
+  } catch (error) {
+    echo(
+      `skip encoding conversion for '${filePath}': ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+}
+
 export const fixEncoding = async (config: Config) => {
   const textFiles = await glob(`${config.novelStorage}/*.txt`)
-
-  for (const filePath of textFiles) {
-    const rawBuffer = await read(filePath, { raw: true })
-    if (!rawBuffer || !(rawBuffer instanceof Buffer)) continue
-
-    if (isUtf8Buffer(rawBuffer)) continue
-
-    try {
-      const detectedEncoding = chardet.detect(rawBuffer)
-      const utf8Buffer = tryConvertToUtf8(
-        rawBuffer,
-        buildEncodings(detectedEncoding),
-      )
-      if (!utf8Buffer) continue
-      await write(filePath, utf8Buffer)
-    } catch (error) {
-      echo(
-        `skip encoding conversion for '${filePath}': ${error instanceof Error ? error.message : String(error)}`,
-      )
-      continue
-    }
-  }
+  await runConcurrent(
+    ENCODING_CONCURRENCY,
+    textFiles.map((filePath) => () => fixFileEncoding(filePath)),
+  )
 }

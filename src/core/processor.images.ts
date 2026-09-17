@@ -1,5 +1,5 @@
 // 图片处理相关
-import { getBasename, glob, write } from 'fire-keeper'
+import { getBasename, glob, runConcurrent, write } from 'fire-keeper'
 import { Jimp } from 'jimp'
 
 import { HTML_TEMPLATE } from '../constants/html.js'
@@ -7,7 +7,7 @@ import { sortByBasename } from '../utils/format.js'
 
 import type { Config } from './config.js'
 
-const IMAGE_PATTERNS = ['*.jpg', '*.jpeg', '*.JPG', '*.JPEG', '*.png', '*.PNG']
+const IMAGE_CONCURRENCY = 5
 
 const buildImageHtml = async (config: Config, imagePath: string) => {
   const image = await Jimp.read(imagePath)
@@ -28,20 +28,15 @@ export const processImages = async (config: Config, source: string) => {
   const basename = getBasename(source)
   const target = `${config.temp}/${basename}.html`
 
-  const imagePaths = sortByBasename([
-    ...new Set(
-      (
-        await Promise.all(
-          IMAGE_PATTERNS.map((pattern) => glob(`${source}/${pattern}`)),
-        )
-      ).flat(),
-    ),
-  ])
+  const imagePaths = sortByBasename(
+    await glob(`${source}/*.{jpg,jpeg,JPG,JPEG,png,PNG}`),
+  )
   if (!imagePaths.length) return null
 
-  const htmlElements: string[] = []
-  for (const imagePath of imagePaths)
-    htmlElements.push(await buildImageHtml(config, imagePath))
+  const htmlElements = await runConcurrent(
+    IMAGE_CONCURRENCY,
+    imagePaths.map((imagePath) => () => buildImageHtml(config, imagePath)),
+  )
 
   const content = HTML_TEMPLATE.replace('{{content}}', htmlElements.join('\n'))
   await write(target, content)

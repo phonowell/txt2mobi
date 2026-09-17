@@ -12,6 +12,7 @@ export const convertToMobi = async (config: Config, htmlPath: string) => {
     throw new Error(`html source not found: '${htmlPath}'`)
 
   const basename = getBasename(htmlPath)
+  const mobiPath = `${config.temp}/${basename}.mobi`
 
   const command = [
     quoteShellArg(config.kindlegen),
@@ -20,8 +21,14 @@ export const convertToMobi = async (config: Config, htmlPath: string) => {
     '-dont_append_source',
   ].join(' ')
 
-  await exec(command)
-  return `${config.temp}/${basename}.mobi`
+  const [exitCode, lastOutput] = await exec(command)
+  if (exitCode > 1 || !(await isExist(mobiPath))) {
+    throw new Error(
+      `kindlegen failed for '${htmlPath}' (exit ${exitCode}): ${lastOutput}`,
+    )
+  }
+
+  return mobiPath
 }
 
 export const splitText = async (config: Config, filePath: string) => {

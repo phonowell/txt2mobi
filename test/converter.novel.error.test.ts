@@ -18,6 +18,8 @@ vi.mock('../src/utils/kindle.js', () => ({
 }))
 vi.mock('fire-keeper', () => ({
   glob: vi.fn(() => Promise.resolve(['/mock/novel/1.txt'])),
+  runConcurrent: (_n: number, tasks: (() => Promise<unknown>)[]) =>
+    Promise.all(tasks.map((task) => task())),
   os: () => 'macos',
   getBasename: (p: string) => p.split('/').pop() ?? '',
   remove: vi.fn(() => Promise.resolve()),

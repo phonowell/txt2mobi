@@ -81,14 +81,8 @@ const fixFile = async (file: SourceFile): Promise<boolean> => {
 }
 
 /** Analyze and fix single file */
-const analyze = async (filePath: string): Promise<string> => {
-  const project = new Project({
-    tsConfigFilePath: './tsconfig.json',
-    skipAddingFilesFromTsConfig: true,
-  })
-
-  project.addSourceFileAtPath(filePath)
-  const file = project.getSourceFileOrThrow(filePath)
+const analyze = async (project: Project, filePath: string): Promise<string> => {
+  const file = project.addSourceFileAtPath(filePath)
   const changed = await fixFile(file)
 
   if (!changed) return ''
@@ -109,7 +103,11 @@ const main = async (src?: string | string[]): Promise<void> => {
 
   echo('info', `📁 Found '${files.length}' TypeScript files to process.`)
 
-  const tasks = files.map((f) => () => analyze(f))
+  const project = new Project({
+    tsConfigFilePath: './tsconfig.json',
+    skipAddingFilesFromTsConfig: true,
+  })
+  const tasks = files.map((f) => () => analyze(project, f))
   const changed = (await runConcurrent(5, tasks)).filter(Boolean)
 
   if (changed.length > 0) {

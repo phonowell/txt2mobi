@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import", "vitest"],
+  "env": {
+    "builtin": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    "dist",
+    "coverage",
+    "temp",
+    "src/__generated__",
+    "**/*.min.js"
+  ],
+  "rules": {
+    "eqeqeq": "error",
+    "no-unexpected-multiline": "error",
+    "no-unneeded-ternary": "error",
+    "no-unused-vars": [
+      "warn",
+      { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
+    ],
+    "no-var": "error",
+    "prefer-const": "warn",
+    "require-await": "error",
+    "import/extensions": ["error", "always", { "ignorePackages": true }],
+    "import/no-duplicates": "warn",
+    "typescript/ban-ts-comment": [
+      "error",
+      { "ts-ignore": "allow-with-description" }
+    ],
+    "typescript/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
+    "typescript/no-explicit-any": "warn",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-unnecessary-condition": "warn",
+    "typescript/prefer-nullish-coalescing": "warn",
+    "typescript/prefer-optional-chain": "warn",
+    "vitest/require-mock-type-parameters": "off"
+  }
+}

@@ -1,18 +1,15 @@
-import { ESLint } from 'eslint'
+import { exec } from 'fire-keeper'
 
 import getTsFiles from './utils/getTsFiles.js'
+
+const quote = (path: string) => `"${path.replace(/"/g, '\\"')}"`
 
 const main = async (listSource?: string | string[]): Promise<void> => {
   const sources = await getTsFiles(listSource)
   if (!sources.length) return
 
-  const eslint = new ESLint({
-    fix: true,
-  })
-
-  const results = await eslint.lintFiles(sources)
-
-  await ESLint.outputFixes(results)
+  const quoted = sources.map(quote).join(' ')
+  await exec([`oxlint --fix ${quoted}`, `oxfmt ${quoted}`])
 }
 
 export default main

@@ -11,7 +11,7 @@ import {
 } from 'fire-keeper'
 import { trim } from 'radash'
 
-type AsyncFn = <T>() => Promise<T>
+type AsyncFn = () => Promise<unknown>
 
 /**
  * 执行指定的任务

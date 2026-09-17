@@ -15,6 +15,8 @@ beforeEach(() => {
         .split('/')
         .pop()
         ?.replace(/\.[^.]+$/, '') ?? '',
+    getDirname: (p: string) => p.split('/').slice(0, -1).join('/'),
+    getExtname: (p: string) => p.match(/\.[^.]+$/)?.[0] ?? '',
     os: () => 'macos',
   }))
   vi.resetModules()
@@ -44,7 +46,7 @@ describe('file utils - removeOrphaned', () => {
       ])
       .mockResolvedValueOnce(['/mock/documents/3.sdr', '/mock/documents/2.sdr'])
 
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.removeOrphaned(mockConfig)
     expect(remove).toHaveBeenCalledTimes(2) // mobi and sdr removal
     expect(remove).toHaveBeenNthCalledWith(1, ['/mock/documents/3.mobi'])
@@ -64,14 +66,14 @@ describe('file utils - removeOrphaned', () => {
       ])
       .mockResolvedValueOnce(['/mock/documents/1.sdr', '/mock/documents/2.sdr'])
 
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await fileUtils.removeOrphaned(mockConfig)
     expect(remove).not.toHaveBeenCalled()
   })
 
   it('should handle glob errors', async () => {
     glob.mockRejectedValue(new Error('fail'))
-    const fileUtils = await import('../src/utils/basic.js')
+    const fileUtils = await import('../src/utils/file.js')
     await expect(fileUtils.removeOrphaned(mockConfig)).rejects.toThrow('fail')
   })
 })

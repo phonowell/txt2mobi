@@ -17,6 +17,8 @@ vi.mock('../src/utils/file.js', () => ({
 vi.mock('../src/utils/kindle.js', () => ({ mobiExists, moveToKindle }))
 vi.mock('fire-keeper', () => ({
   glob,
+  runConcurrent: (_n: number, tasks: (() => Promise<unknown>)[]) =>
+    Promise.all(tasks.map((task) => task())),
   os: () => 'macos',
   getBasename: (p: string) => p.split('/').pop() ?? '',
   remove: vi.fn(() => Promise.resolve()),

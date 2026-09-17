@@ -1,13 +1,21 @@
-import { getBasename, glob, isExist, remove, rename } from 'fire-keeper'
+import {
+  getBasename,
+  getDirname,
+  getExtname,
+  glob,
+  isExist,
+  remove,
+  rename,
+} from 'fire-keeper'
 
 import type { Config } from '../core/config.js'
 
 const RESERVED_CHARACTERS = /[\\/:*?"<>|]/g
 const MAX_NAME_LENGTH = 120
+const MAX_RENAME_ATTEMPTS = 1000
 
 const removeTxtExtension = (name: string) => name.replace(/\.txt$/i, '')
 const stripExtension = (name: string) => name.replace(/\.[^.]+$/, '')
-const getExtension = (name: string) => name.match(/(\.[^.]+)$/)?.[1] ?? ''
 const trimToLength = (name: string, maxLength = MAX_NAME_LENGTH) =>
   name.length > maxLength ? name.slice(0, maxLength).trim() : name
 
@@ -22,20 +30,19 @@ const buildCandidateName = (
 }
 
 const ensureUniqueTargetName = async (source: string, targetName: string) => {
-  const currentName = `${getBasename(source)}${getExtension(source)}`
+  const currentName = `${getBasename(source)}${getExtname(source)}`
   if (currentName === targetName) return targetName
-  if (!(await isExist(source.replace(/[^\\/]+$/, targetName))))
-    return targetName
 
-  const extension = getExtension(targetName)
+  const dir = getDirname(source)
+  if (!(await isExist(`${dir}/${targetName}`))) return targetName
+
+  const extension = getExtname(targetName)
   const baseName = stripExtension(targetName)
-  let index = 2
-  while (true) {
+  for (let index = 2; index < MAX_RENAME_ATTEMPTS; index += 1) {
     const candidate = buildCandidateName(baseName, extension, ` ${index}`)
-    const candidatePath = source.replace(/[^\\/]+$/, candidate)
-    if (!(await isExist(candidatePath))) return candidate
-    index += 1
+    if (!(await isExist(`${dir}/${candidate}`))) return candidate
   }
+  throw new Error(`cannot find unique name for '${targetName}'`)
 }
 
 export const cleanName = (name: string) => {

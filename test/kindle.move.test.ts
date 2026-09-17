@@ -18,7 +18,7 @@ vi.mock('fire-keeper', () => ({
   echo: echoMock,
 }))
 
-import type { Config } from '../src/core/config'
+import type { Config } from '../src/core/config.js'
 import type * as KindleUtils from '../src/utils/kindle.js'
 
 const mockConfig: Config = {

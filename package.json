@@ -4,31 +4,22 @@
     "url": "https://github.com/phonowell/txt2mobi/issues"
   },
   "dependencies": {
-    "chardet": "^2.1.1",
+    "chardet": "^2.2.0",
     "fire-keeper": "^0.0.237",
-    "iconv-lite": "^0.7.2",
-    "jimp": "^1.6.0",
+    "iconv-lite": "^0.7.3",
+    "jimp": "^1.6.1",
     "radash": "^12.1.1"
   },
   "description": "CLI to convert TXT novels and manga folders to MOBI and sync to Kindle",
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
-    "eslint": "^9.39.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "eslint-plugin-unused-imports": "^4.4.1",
-    "globals": "^17.4.0",
-    "prettier": "^3.8.1",
-    "ts-morph": "^27.0.2",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "@types/node": "^25.9.7",
+    "@vitest/coverage-v8": "^5.0.1",
+    "oxfmt": "^0.68.0",
+    "oxlint": "^1.83.0",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
   },
   "homepage": "https://github.com/phonowell/txt2mobi#readme",
   "keywords": [
@@ -47,25 +38,33 @@
   "bin": {
     "txt2mobi": "dist/index.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
     "dist",
     "readme.md",
     "license.md",
-    "llms.txt",
+    "AGENTS.md",
     "CHANGELOG.md"
   ],
   "main": "dist/index.js",
   "name": "txt2mobi",
+  "packageManager": "pnpm@11.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/phonowell/txt2mobi.git"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "lint": "eslint \"src/**/*.{ts,tsx}\" \"tasks/**/*.ts\" \"test/**/*.ts\" --fix",
+    "coverage": "vitest run --coverage",
+    "lint": "oxlint --fix src tasks test vitest.config.ts && oxfmt src tasks test vitest.config.ts",
     "prepack": "pnpm build",
     "start": "tsx src/index.ts",
     "task": "tsx tasks/index.ts",
